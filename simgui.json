@@ -111,7 +111,8 @@
             "open": true
           },
           "open": true
-        }
+        },
+        "open": true
       },
       "SmartDashboard": {
         "open": true
@@ -119,6 +120,12 @@
     },
     "transitory": {
       "Shuffleboard": {
+        "Arcade Teleop": {
+          "open": true
+        },
+        "Arcade Teleop(2)": {
+          "open": true
+        },
         "Swerve": {
           "open": true
         },

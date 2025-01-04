@@ -27,8 +27,7 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.constants.DifferentialDriveConstants;
-import frc.robot.constants.SwerveDriveConstants;
+import frc.robot.constants.DriveConstants;
 import frc.robot.constants.SimConstants;
 import frc.robot.utils.PhotonBridge;
 
@@ -36,21 +35,21 @@ import frc.robot.utils.PhotonBridge;
  * Drive Subsystem.
  * Handles all drive functionality.
  */
-public class DifferentialDriveSub extends SubsystemBase {
-  private final WPI_TalonSRX leftMaster = DifferentialDriveConstants.MOTOR_ID_LM.get();
-  private final WPI_TalonSRX leftSlave = DifferentialDriveConstants.MOTOR_ID_LS.get();
+public class DriveSub extends SubsystemBase {
+  private final WPI_TalonSRX leftMaster = DriveConstants.MOTOR_ID_LM.get();
+  private final WPI_TalonSRX leftSlave = DriveConstants.MOTOR_ID_LS.get();
 
-  private final WPI_TalonSRX rightMaster = DifferentialDriveConstants.MOTOR_ID_RM.get();
-  private final WPI_TalonSRX rightSlave = DifferentialDriveConstants.MOTOR_ID_RS.get();
+  private final WPI_TalonSRX rightMaster = DriveConstants.MOTOR_ID_RM.get();
+  private final WPI_TalonSRX rightSlave = DriveConstants.MOTOR_ID_RS.get();
 
   private final ADIS16470_IMU imu = new ADIS16470_IMU();
-  private final Encoder leftEncoder = DifferentialDriveConstants.ENCODER_ID_L.get();
-  private final Encoder rightEncoder = DifferentialDriveConstants.ENCODER_ID_R.get();
+  private final Encoder leftEncoder = DriveConstants.ENCODER_ID_L.get();
+  private final Encoder rightEncoder = DriveConstants.ENCODER_ID_R.get();
   private final PhotonBridge photon = new PhotonBridge();
 
   public final DifferentialDrive drive; // pub for shuffleboard
   public final DifferentialDrivePoseEstimator poseEstimator = new DifferentialDrivePoseEstimator(
-      DifferentialDriveConstants.KINEMATICS,
+      DriveConstants.KINEMATICS,
       Rotation2d.fromDegrees(imu.getAngle(IMUAxis.kZ)),
       0, 0, new Pose2d());
 
@@ -70,10 +69,10 @@ public class DifferentialDriveSub extends SubsystemBase {
   private double turnThrottle;
 
   public final DifferentialDrivetrainSim drivetrainSimulator = new DifferentialDrivetrainSim(
-      drivetrainSystem, DCMotor.getCIM(2), 10.71, SwerveDriveConstants.WHEEL_BASE,
-      SwerveDriveConstants.WHEEL_DIAMETER_METERS / 2, null);
+      drivetrainSystem, DCMotor.getCIM(2), 10.71, DriveConstants.WHEEL_BASE,
+      DriveConstants.WHEEL_DIAMETER_METERS / 2, null);
 
-  public DifferentialDriveSub() {
+  public DriveSub() {
     leftSlave.follow(leftMaster);
     rightSlave.follow(rightMaster);
 
@@ -133,7 +132,7 @@ public class DifferentialDriveSub extends SubsystemBase {
    * @param steering The steering
    */
   public void arcade(double throttle, double steering) {
-    if (DifferentialDriveConstants.USE_CLAMPING) {
+    if (DriveConstants.USE_CLAMPING) {
       driveThrottle = MathUtil.clamp(driveThrottle, -0.4, 0.4);
       turnThrottle = MathUtil.clamp(turnThrottle, -0.8, 0.8);
     }
@@ -174,45 +173,45 @@ public class DifferentialDriveSub extends SubsystemBase {
 
   /* SysId routine for drive */
   public final SysIdRoutine sysIdDrive = new SysIdRoutine(
-    new SysIdRoutine.Config(
-      Units.Volts.per(Units.Second).of(0.2),
-      Units.Volt.of(0.4),
-      Units.Second.of(6)),
-    new SysIdRoutine.Mechanism(new Consumer<Measure<Voltage>>() {
-      @Override
-      public void accept(Measure<Voltage> value) {
-        arcade(value.in(Units.Volt), 0);
-      }
-    }, new Consumer<SysIdRoutineLog>() {
-      @Override
-      public void accept(SysIdRoutineLog log) {
-        log.motor("drive")
-          .voltage(Units.Volt.of(driveThrottle))
-          .linearPosition(Units.Meter.of(leftEncoder.getDistance()))
-          .linearVelocity(Units.MetersPerSecond.of(leftEncoder.getRate()))
-          .linearAcceleration(Units.MetersPerSecondPerSecond.of(imu.getAccelX()));
-      }
-    }, this));
-  
+      new SysIdRoutine.Config(
+          Units.Volts.per(Units.Second).of(0.2),
+          Units.Volt.of(0.4),
+          Units.Second.of(6)),
+      new SysIdRoutine.Mechanism(new Consumer<Measure<Voltage>>() {
+        @Override
+        public void accept(Measure<Voltage> value) {
+          arcade(value.in(Units.Volt), 0);
+        }
+      }, new Consumer<SysIdRoutineLog>() {
+        @Override
+        public void accept(SysIdRoutineLog log) {
+          log.motor("drive")
+              .voltage(Units.Volt.of(driveThrottle))
+              .linearPosition(Units.Meter.of(leftEncoder.getDistance()))
+              .linearVelocity(Units.MetersPerSecond.of(leftEncoder.getRate()))
+              .linearAcceleration(Units.MetersPerSecondPerSecond.of(imu.getAccelX()));
+        }
+      }, this));
+
   /* SysId routine for turn */
   public final SysIdRoutine sysIdTurn = new SysIdRoutine(
-    new SysIdRoutine.Config(
-      Units.Volts.per(Units.Second).of(0.1),
-      Units.Volt.of(0.4),
-      Units.Second.of(6)),
-    new SysIdRoutine.Mechanism(new Consumer<Measure<Voltage>>() {
-      @Override
-      public void accept(Measure<Voltage> value) {
-        arcade(0, value.in(Units.Volt));
-      }
-    }, new Consumer<SysIdRoutineLog>() {
-      @Override
-      public void accept(SysIdRoutineLog log) {
-        log.motor("turn")
-          .voltage(Units.Volt.of(turnThrottle))
-          .angularPosition(Units.Degrees.of(imu.getAngle(imu.getYawAxis())))
-          .angularVelocity(Units.DegreesPerSecond.of(imu.getRate(imu.getYawAxis())))
-          .angularAcceleration(Units.DegreesPerSecond.per(Units.Second).of(imu.getYFilteredAccelAngle()));
-      }
-    }, this));
+      new SysIdRoutine.Config(
+          Units.Volts.per(Units.Second).of(0.1),
+          Units.Volt.of(0.4),
+          Units.Second.of(6)),
+      new SysIdRoutine.Mechanism(new Consumer<Measure<Voltage>>() {
+        @Override
+        public void accept(Measure<Voltage> value) {
+          arcade(0, value.in(Units.Volt));
+        }
+      }, new Consumer<SysIdRoutineLog>() {
+        @Override
+        public void accept(SysIdRoutineLog log) {
+          log.motor("turn")
+              .voltage(Units.Volt.of(turnThrottle))
+              .angularPosition(Units.Degrees.of(imu.getAngle(imu.getYawAxis())))
+              .angularVelocity(Units.DegreesPerSecond.of(imu.getRate(imu.getYawAxis())))
+              .angularAcceleration(Units.DegreesPerSecond.per(Units.Second).of(imu.getYFilteredAccelAngle()));
+        }
+      }, this));
 }

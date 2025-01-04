@@ -3,14 +3,15 @@ package frc.robot.constants;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.util.Units;
 import frc.robot.utils.EncoderSupplier;
 import frc.robot.utils.RangeMath.AxesFit;
 import frc.robot.utils.RangeMath.DriveBaseFit;
 import frc.robot.utils.motorsupplier.MotorSupplier;
 import frc.robot.utils.motorsupplier.TalonMotorSupplier;
 
-public class DifferentialDriveConstants {
-  protected DifferentialDriveConstants() {
+public class DriveConstants {
+  protected DriveConstants() {
   }
 
   /**
@@ -78,54 +79,67 @@ public class DifferentialDriveConstants {
   /** min throttle for turning */
   public static final double MIN_TURN = 0.3;
 
+  /** Distance between front and back wheel on robot in meters */
+  public static final double TRACK_WIDTH = Units.inchesToMeters(20.7);
+  /** Distance between centers of left and right wheels on robot in meters */
+  public static final double WHEEL_BASE = Units.inchesToMeters(20.7);
+  /** Wheel diameter in meters */
+  public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3);
+
   /**
    * settings for robot drive in default teleop
    * 
    * modRFromX ?
    * set to zero for now
    */
-  /*public static final DriveBaseFit PILOT_SETTINGS = DriveBaseFit.InitTankBot(
-      MIN_THROT, 1, 2, 0.1, false, 
-      MIN_TURN, 1, 3, 0.1, false, 
-      0.5, 0, 1);*/
+  /*
+   * public static final DriveBaseFit PILOT_SETTINGS = DriveBaseFit.InitTankBot(
+   * MIN_THROT, 1, 2, 0.1, false,
+   * MIN_TURN, 1, 3, 0.1, false,
+   * 0.5, 0, 1);
+   */
   public static final DriveBaseFit PILOT_SETTINGS = new DriveBaseFit(
       new AxesFit().withOutputMinMax(MIN_THROT, 1).withDeadBand(0.1).withPow(2),
       new AxesFit().withOutputMinMax(MIN_TURN, 1).withDeadBand(0.1).withPow(3),
-      0.5
-  );
+      0.5);
 
   /**
    * settings for robot drive in demo mode
    * {min throt,max throt,curve power}, {min turn throt, max turn throt,curve
    * power}
    */
-  /*public static final DriveBaseFit DEMO_SETTINGS = DriveBaseFit.InitTankBot(
-      MIN_THROT, 0.5, 3, 0.1, false, 
-      MIN_TURN,  0.6, 4, 0.1, false, 
-      0.5, 0, 1);*/
+  /*
+   * public static final DriveBaseFit DEMO_SETTINGS = DriveBaseFit.InitTankBot(
+   * MIN_THROT, 0.5, 3, 0.1, false,
+   * MIN_TURN, 0.6, 4, 0.1, false,
+   * 0.5, 0, 1);
+   */
   public static final DriveBaseFit DEMO_SETTINGS = new DriveBaseFit(
       new AxesFit().withOutputMinMax(MIN_THROT, 0.5).withDeadBand(0.1).withPow(3),
       new AxesFit().withOutputMinMax(MIN_TURN, 0.6).withDeadBand(0.1).withPow(4),
-      0.5
-  );
+      0.5);
 
   /**
    * settings for robot drive in PID drive
    * {min throt,max throt,curve power}, {min turn throt, max turn throt,curve
    * power}
    */
-  /*public static final DriveBaseFit PID1_SETTINGS = DriveBaseFit.InitTankBot(
-      0, MAX_SPEED, 3, 0, false, 
-      0, 1, 3, 0, false,
-      0.5, 0, 1);*/
+  /*
+   * public static final DriveBaseFit PID1_SETTINGS = DriveBaseFit.InitTankBot(
+   * 0, MAX_SPEED, 3, 0, false,
+   * 0, 1, 3, 0, false,
+   * 0.5, 0, 1);
+   */
 
   /**
    * settings for robot drive in PID drive
    * {min throt,max throt,curve power}, {min turn throt, max turn throt,curve
    * power}
    */
-  /*public static final DriveBaseFit PID2_SETTINGS = DriveBaseFit.InitTankBot(
-      MIN_THROT, 1, 1, 0, false, 
-      MIN_TURN, 1, 1, 0, false,
-      0.5, 0, 1);*/
+  /*
+   * public static final DriveBaseFit PID2_SETTINGS = DriveBaseFit.InitTankBot(
+   * MIN_THROT, 1, 1, 0, false,
+   * MIN_TURN, 1, 1, 0, false,
+   * 0.5, 0, 1);
+   */
 }
