@@ -16,13 +16,14 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Subsystems;
@@ -46,6 +47,7 @@ public class DriveSub extends SubsystemBase {
 
   public final EncoderSim leftEncoderSim = new EncoderSim(leftEncoder);
   public final EncoderSim rightEncoderSim = new EncoderSim(rightEncoder);
+  public final Field2d field = new Field2d();
 
   // Simulation Variables
   /** @wip add corrected values */
@@ -55,7 +57,7 @@ public class DriveSub extends SubsystemBase {
       SimConstants.KV_ANGULAR,
       SimConstants.KA_ANGULAR);
 
-  private final double randomBiasSim = (Math.random()-0.5)/6;
+  private final double randomBiasSim = (Math.random() - 0.5) / 6;
 
   private final PIDController steerPID = new PIDController(0.01, 0.00001, 0.001);
   private final PIDController drivePID = new PIDController(0.1, 0.00001, 0.001);
@@ -81,15 +83,16 @@ public class DriveSub extends SubsystemBase {
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
   }
+
   public DifferentialDriveWheelPositions getWheelPositions() {
     return new DifferentialDriveWheelPositions(leftEncoder.getRate(), rightEncoder.getRate());
   }
 
-  public double getLeftDistance(){
+  public double getLeftDistance() {
     return leftEncoder.getDistance();
   }
 
-  public double getRightDistance(){
+  public double getRightDistance() {
     return rightEncoder.getDistance();
   }
 
@@ -98,21 +101,25 @@ public class DriveSub extends SubsystemBase {
    * @param speed
    * @param angle
    */
-  public void angleHold(double speed, Rotation2d angle){
+  public void angleHold(double speed, Rotation2d angle) {
     double error = angle.minus(Subsystems.nav.getYaw()).getDegrees();
 
-    if(Math.abs(error) > 10){speed = 0;}
+    if (Math.abs(error) > 10) {
+      speed = 0;
+    }
 
     double steer = -steerPID.calculate(error);
     arcade(speed, steer);
   }
 
-  public boolean driveTo(Pose2d targetPose, double tolerance){
+  public boolean driveTo(Pose2d targetPose, double tolerance) {
     NavigationSub nav = Subsystems.nav;
 
     Pose2d error = targetPose.relativeTo(nav.getPose());
     double distError = error.getTranslation().getNorm();
-    if(distError < tolerance){return true;}
+    if (distError < tolerance) {
+      return true;
+    }
 
     angleHold(drivePID.calculate(distError), targetPose.getRotation().minus(nav.getYaw()));
     return false;
@@ -150,7 +157,9 @@ public class DriveSub extends SubsystemBase {
    * @param steering The steering
    */
   public void arcade(double throttle, double steering) {
-    if(throttle != 0 || steering != 0){steering = simNoise(steering);}
+    if (throttle != 0 || steering != 0) {
+      steering = simNoise(steering);
+    }
     if (DriveConstants.USE_CLAMPING) {
       driveThrottle = MathUtil.clamp(driveThrottle, -0.4, 0.4);
       turnThrottle = MathUtil.clamp(turnThrottle, -0.8, 0.8);
@@ -241,8 +250,10 @@ public class DriveSub extends SubsystemBase {
    * }, this));
    */
 
-  private double simNoise(double in){
-    if(Robot.isReal()){return in;}
-    return in + ((Math.random()-0.5) / 5) + randomBiasSim;
+  private double simNoise(double in) {
+    if (Robot.isReal()) {
+      return in;
+    }
+    return in + ((Math.random() - 0.5) / 5) + randomBiasSim;
   }
 }
