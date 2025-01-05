@@ -207,7 +207,7 @@ public class AxesFit{
     //As before this function reranges the input into the output.
     //the modified version though changes the output range instead of the input
     //So the same 0->1 input becomes any->any
-    return (input * (-absMin + absMax)) + absMin;
+    return input > 0 ? (input * (-absMin + absMax)) + absMin : 0;
   }
 
   /** gets the absolute max output once modified by boost and limiter */

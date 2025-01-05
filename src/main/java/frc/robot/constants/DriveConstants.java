@@ -99,9 +99,9 @@ public class DriveConstants {
    * 0.5, 0, 1);
    */
   public static final DriveBaseFit PILOT_SETTINGS = new DriveBaseFit(
-      new AxesFit().withOutputMinMax(MIN_THROT, 1).withDeadBand(0.1).withPow(2),
-      new AxesFit().withOutputMinMax(MIN_TURN, 1).withDeadBand(0.1).withPow(3),
-      0.5);
+      new AxesFit().withOutputMinMax(MIN_THROT, 0.8).withDeadBand(0.1).withPow(2).withBooster(1).withLimiter(0.5),
+      new AxesFit().withOutputMinMax(MIN_TURN, 0.7).withDeadBand(0.1).withPow(3),
+      0.4).invertX().invertYaw();
 
   /**
    * settings for robot drive in demo mode
@@ -117,7 +117,7 @@ public class DriveConstants {
   public static final DriveBaseFit DEMO_SETTINGS = new DriveBaseFit(
       new AxesFit().withOutputMinMax(MIN_THROT, 0.5).withDeadBand(0.1).withPow(3),
       new AxesFit().withOutputMinMax(MIN_TURN, 0.6).withDeadBand(0.1).withPow(4),
-      0.5);
+      0.5).invertX().invertYaw();
 
   /**
    * settings for robot drive in PID drive

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.lang.reflect.Field;
 import java.util.function.Consumer;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -24,6 +25,8 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.simulation.ADIS16470_IMUSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -46,6 +49,7 @@ public class DriveSub extends SubsystemBase {
   private final Encoder leftEncoder = DriveConstants.ENCODER_ID_L.get();
   private final Encoder rightEncoder = DriveConstants.ENCODER_ID_R.get();
   private final PhotonBridge photon = new PhotonBridge();
+  private final Field2d field = new Field2d();
 
   public final DifferentialDrive drive; // pub for shuffleboard
   public final DifferentialDrivePoseEstimator poseEstimator = new DifferentialDrivePoseEstimator(
@@ -78,6 +82,8 @@ public class DriveSub extends SubsystemBase {
 
     drive = new DifferentialDrive(leftMaster, rightMaster);
 
+    SmartDashboard.putData(field);
+    
     addChild("Differential Drive", drive);
   }
 
@@ -169,10 +175,12 @@ public class DriveSub extends SubsystemBase {
 
     photon.simulationPeriodic(drivetrainSimulator.getPose());
     imuSim.setGyroAngleZ(drivetrainSimulator.getHeading().getDegrees());
+
+    field.setRobotPose(drivetrainSimulator.getPose());
   }
 
   /* SysId routine for drive */
-  public final SysIdRoutine sysIdDrive = new SysIdRoutine(
+  /*public final SysIdRoutine sysIdDrive = new SysIdRoutine(
       new SysIdRoutine.Config(
           Units.Volts.per(Units.Second).of(0.2),
           Units.Volt.of(0.4),
@@ -191,10 +199,10 @@ public class DriveSub extends SubsystemBase {
               .linearVelocity(Units.MetersPerSecond.of(leftEncoder.getRate()))
               .linearAcceleration(Units.MetersPerSecondPerSecond.of(imu.getAccelX()));
         }
-      }, this));
+      }, this));*/
 
   /* SysId routine for turn */
-  public final SysIdRoutine sysIdTurn = new SysIdRoutine(
+  /*public final SysIdRoutine sysIdTurn = new SysIdRoutine(
       new SysIdRoutine.Config(
           Units.Volts.per(Units.Second).of(0.1),
           Units.Volt.of(0.4),
@@ -213,5 +221,5 @@ public class DriveSub extends SubsystemBase {
               .angularVelocity(Units.DegreesPerSecond.of(imu.getRate(imu.getYawAxis())))
               .angularAcceleration(Units.DegreesPerSecond.per(Units.Second).of(imu.getYFilteredAccelAngle()));
         }
-      }, this));
+      }, this));*/
 }
