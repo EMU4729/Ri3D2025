@@ -11,8 +11,6 @@ import frc.robot.LEDs.BatteryPercentLEDCommand;
 import frc.robot.LEDs.ClearLEDCommand;
 import frc.robot.LEDs.RainbowLEDCommand;
 import frc.robot.LEDs.TeamColorLEDCommand;
-//import frc.robot.commands.RainbowLEDCommand;
-//import frc.robot.shufflecontrol.ShuffleControl;
 import frc.robot.utils.logger.Logger;
 
 /**
@@ -28,7 +26,6 @@ public class Robot extends TimedRobot {
   private Command autoCommand;
   private RobotContainer robotContainer;
 
-
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -41,7 +38,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
     // LEDControl.getInstance().runDirectionLights();
-    //new ShuffleControl();
+    // new ShuffleControl();
   }
 
   /**
@@ -68,16 +65,16 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
   }
 
-
   BatteryPercentLEDCommand batteryLEDDisplay;
+
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
     new RainbowLEDCommand().withZone().schedule();
     Logger.pauseAllLoggers();
     System.out
-    .println("Disabled ----------------------------------------------------------------------------------------");
-    new TeamColorLEDCommand().withZone(new int[]{1,2}).schedule();
+        .println("Disabled ----------------------------------------------------------------------------------------");
+    new TeamColorLEDCommand().withZone(new int[] { 1, 2 }).schedule();
     batteryLEDDisplay = new BatteryPercentLEDCommand();
     batteryLEDDisplay.schedule();
   }
@@ -103,7 +100,7 @@ public class Robot extends TimedRobot {
     Logger.unpauseAllLoggers();
     System.out
         .println("Auto Start --------------------------------------------------------------------------------------");
-    //Subsystems.swerveDrive.resetIntegral();
+    // Subsystems.swerveDrive.resetIntegral();
   }
 
   /** This function is called periodically during autonomous. */
@@ -125,7 +122,7 @@ public class Robot extends TimedRobot {
     Logger.unpauseAllLoggers();
     System.out
         .println("Teleop Start ------------------------------------------------------------------------------------");
-    //Subsystems.swerveDrive.resetIntegral();
+    // Subsystems.swerveDrive.resetIntegral();
   }
 
   /** This function is called periodically during operator control. */
