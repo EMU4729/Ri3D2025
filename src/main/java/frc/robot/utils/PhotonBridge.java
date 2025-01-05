@@ -1,7 +1,5 @@
 package frc.robot.utils;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
@@ -35,17 +33,8 @@ public class PhotonBridge {
   private PhotonCameraSim camSim;
 
   public PhotonBridge() {
-    AprilTagFieldLayout tempFieldLayout;
-
-    try {
-      tempFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-    } catch (IOException e) {
-      tempFieldLayout = new AprilTagFieldLayout(List.of(), 0, 0);
-      System.out.println("PhotonSub : Error reading AprilTag field layout: " + e);
-    }
-
-    fieldLayout = tempFieldLayout;
-    poseEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cam, robotToCam);
+    fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+    poseEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
     poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
     if (RobotBase.isSimulation()) {
@@ -79,7 +68,12 @@ public class PhotonBridge {
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
     if (cam.isConnected()) {
-      return poseEstimator.update();
+      final var results = cam.getAllUnreadResults();
+      if (results.isEmpty()) {
+        return Optional.empty();
+      }
+      final var latestResult = results.get(results.size() - 1);
+      return poseEstimator.update(latestResult);
     } else {
       // System.out.println("Photon Bridge Error: Camera Not Found");
       return Optional.empty();

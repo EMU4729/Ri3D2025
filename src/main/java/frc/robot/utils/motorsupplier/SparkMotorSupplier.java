@@ -1,38 +1,44 @@
 package frc.robot.utils.motorsupplier;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
-public class SparkMotorSupplier extends MotorSupplier<CANSparkMax> {
+public class SparkMotorSupplier extends MotorSupplier<SparkMax> {
 
   public SparkMotorSupplier(int port) {
     super(port);
   }
 
   @Override
-  public MotorSupplier<CANSparkMax> withBrake() {
+  public MotorSupplier<SparkMax> withBrake() {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public MotorSupplier<CANSparkMax> withSafety() {
+  public MotorSupplier<SparkMax> withSafety() {
     throw new UnsupportedOperationException();
   }
 
-  public CANSparkMax get() {
+  public SparkMax get() {
     if (port < 0) {
       System.out.println("MotorInfo : motor port num < 0, check port is defined : " + port);
-      return new CANSparkMax(port, MotorType.kBrushed);
+      return new SparkMax(port, MotorType.kBrushed);
     }
-    CANSparkMax spark = new CANSparkMax(port, MotorType.kBrushed);
+    final var spark = new SparkMax(port, MotorType.kBrushed);
 
-    spark.setInverted(invert);
+    final var config = new SparkMaxConfig();
+    config.inverted(invert);
 
     if (voltageComp) {
-      spark.enableVoltageCompensation(12);
+      config.voltageCompensation(12);
     } else {
-      spark.disableVoltageCompensation();
+      config.disableVoltageCompensation();
     }
+
+    spark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
     return spark;
   }

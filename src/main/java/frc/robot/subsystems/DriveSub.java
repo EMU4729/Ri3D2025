@@ -14,11 +14,16 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Subsystems;
@@ -42,6 +47,7 @@ public class DriveSub extends SubsystemBase {
 
   public final EncoderSim leftEncoderSim = new EncoderSim(leftEncoder);
   public final EncoderSim rightEncoderSim = new EncoderSim(rightEncoder);
+  public final Field2d field = new Field2d();
 
   // Simulation Variables
   /** @wip add corrected values */
@@ -51,7 +57,7 @@ public class DriveSub extends SubsystemBase {
       SimConstants.KV_ANGULAR,
       SimConstants.KA_ANGULAR);
 
-  private final double randomBiasSim = (Math.random()-0.5)/6;
+  private final double randomBiasSim = (Math.random() - 0.5) / 6;
 
   private final PIDController steerPID = new PIDController(0.01, 0.00001, 0.001);
   private final PIDController drivePID = new PIDController(0.2, 0.001, 0.001);
@@ -69,24 +75,24 @@ public class DriveSub extends SubsystemBase {
 
     drive = new DifferentialDrive(leftMaster, rightMaster);
 
+    SmartDashboard.putData(field);
 
-
-    
     addChild("Differential Drive", drive);
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
   }
+
   public DifferentialDriveWheelPositions getWheelPositions() {
     return new DifferentialDriveWheelPositions(leftEncoder.getRate(), rightEncoder.getRate());
   }
 
-  public double getLeftDistance(){
+  public double getLeftDistance() {
     return leftEncoder.getDistance();
   }
 
-  public double getRightDistance(){
+  public double getRightDistance() {
     return rightEncoder.getDistance();
   }
 
@@ -122,7 +128,9 @@ public class DriveSub extends SubsystemBase {
    * @param steering The steering
    */
   public void arcade(double throttle, double steering) {
-    if(throttle != 0 || steering != 0){steering = simNoise(steering);}
+    if (throttle != 0 || steering != 0) {
+      steering = simNoise(steering);
+    }
     if (DriveConstants.USE_CLAMPING) {
       driveThrottle = MathUtil.clamp(driveThrottle, -0.4, 0.4);
       turnThrottle = MathUtil.clamp(turnThrottle, -0.8, 0.8);
@@ -161,48 +169,57 @@ public class DriveSub extends SubsystemBase {
   }
 
   /* SysId routine for drive */
-  /*public final SysIdRoutine sysIdDrive = new SysIdRoutine(
-      new SysIdRoutine.Config(
-          Units.Volts.per(Units.Second).of(0.2),
-          Units.Volt.of(0.4),
-          Units.Second.of(6)),
-      new SysIdRoutine.Mechanism(new Consumer<Measure<Voltage>>() {
-        @Override
-        public void accept(Measure<Voltage> value) {
-          arcade(value.in(Units.Volt), 0);
-        }
-      }, new Consumer<SysIdRoutineLog>() {
-        @Override
-        public void accept(SysIdRoutineLog log) {
-          log.motor("drive")
-              .voltage(Units.Volt.of(driveThrottle))
-              .linearPosition(Units.Meter.of(leftEncoder.getDistance()))
-              .linearVelocity(Units.MetersPerSecond.of(leftEncoder.getRate()))
-              .linearAcceleration(Units.MetersPerSecondPerSecond.of(imu.getAccelX()));
-        }
-      }, this));*/
+  /*
+   * public final SysIdRoutine sysIdDrive = new SysIdRoutine(
+   * new SysIdRoutine.Config(
+   * Units.Volts.per(Units.Second).of(0.2),
+   * Units.Volt.of(0.4),
+   * Units.Second.of(6)),
+   * new SysIdRoutine.Mechanism(new Consumer<Voltage>() {
+   * 
+   * @Override
+   * public void accept(Voltage value) {
+   * arcade(value.in(Units.Volt), 0);
+   * }
+   * }, new Consumer<SysIdRoutineLog>() {
+   * 
+   * @Override
+   * public void accept(SysIdRoutineLog log) {
+   * log.motor("drive")
+   * .voltage(Units.Volt.of(driveThrottle))
+   * .linearPosition(Units.Meter.of(leftEncoder.getDistance()))
+   * .linearVelocity(Units.MetersPerSecond.of(leftEncoder.getRate()))
+   * .linearAcceleration(Units.MetersPerSecondPerSecond.of(imu.getAccelX()));
+   * }
+   * }, this));
+   */
 
   /* SysId routine for turn */
-  /*public final SysIdRoutine sysIdTurn = new SysIdRoutine(
-      new SysIdRoutine.Config(
-          Units.Volts.per(Units.Second).of(0.1),
-          Units.Volt.of(0.4),
-          Units.Second.of(6)),
-      new SysIdRoutine.Mechanism(new Consumer<Measure<Voltage>>() {
-        @Override
-        public void accept(Measure<Voltage> value) {
-          arcade(0, value.in(Units.Volt));
-        }
-      }, new Consumer<SysIdRoutineLog>() {
-        @Override
-        public void accept(SysIdRoutineLog log) {
-          log.motor("turn")
-              .voltage(Units.Volt.of(turnThrottle))
-              .angularPosition(Units.Degrees.of(imu.getAngle(imu.getYawAxis())))
-              .angularVelocity(Units.DegreesPerSecond.of(imu.getRate(imu.getYawAxis())))
-              .angularAcceleration(Units.DegreesPerSecond.per(Units.Second).of(imu.getYFilteredAccelAngle()));
-        }
-      }, this));*/
+  /*
+   * public final SysIdRoutine sysIdTurn = new SysIdRoutine(
+   * new SysIdRoutine.Config(
+   * Units.Volts.per(Units.Second).of(0.1),
+   * Units.Volt.of(0.4),
+   * Units.Second.of(6)),
+   * new SysIdRoutine.Mechanism(new Consumer<Voltage>() {
+   * 
+   * @Override
+   * public void accept(Voltage value) {
+   * arcade(0, value.in(Units.Volt));
+   * }
+   * }, new Consumer<SysIdRoutineLog>() {
+   * 
+   * @Override
+   * public void accept(SysIdRoutineLog log) {
+   * log.motor("turn")
+   * .voltage(Units.Volt.of(turnThrottle))
+   * .angularPosition(Units.Degrees.of(imu.getAngle(imu.getYawAxis())))
+   * .angularVelocity(Units.DegreesPerSecond.of(imu.getRate(imu.getYawAxis())))
+   * .angularAcceleration(Units.DegreesPerSecond.per(Units.Second).of(imu.
+   * getYFilteredAccelAngle()));
+   * }
+   * }, this));
+   */
 
 
   private double simNoise(double in){
