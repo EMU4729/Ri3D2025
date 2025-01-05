@@ -14,6 +14,10 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -69,9 +73,8 @@ public class DriveSub extends SubsystemBase {
 
     drive = new DifferentialDrive(leftMaster, rightMaster);
 
+    SmartDashboard.putData(field);
 
-
-    
     addChild("Differential Drive", drive);
   }
 
@@ -186,48 +189,57 @@ public class DriveSub extends SubsystemBase {
   }
 
   /* SysId routine for drive */
-  /*public final SysIdRoutine sysIdDrive = new SysIdRoutine(
-      new SysIdRoutine.Config(
-          Units.Volts.per(Units.Second).of(0.2),
-          Units.Volt.of(0.4),
-          Units.Second.of(6)),
-      new SysIdRoutine.Mechanism(new Consumer<Measure<Voltage>>() {
-        @Override
-        public void accept(Measure<Voltage> value) {
-          arcade(value.in(Units.Volt), 0);
-        }
-      }, new Consumer<SysIdRoutineLog>() {
-        @Override
-        public void accept(SysIdRoutineLog log) {
-          log.motor("drive")
-              .voltage(Units.Volt.of(driveThrottle))
-              .linearPosition(Units.Meter.of(leftEncoder.getDistance()))
-              .linearVelocity(Units.MetersPerSecond.of(leftEncoder.getRate()))
-              .linearAcceleration(Units.MetersPerSecondPerSecond.of(imu.getAccelX()));
-        }
-      }, this));*/
+  /*
+   * public final SysIdRoutine sysIdDrive = new SysIdRoutine(
+   * new SysIdRoutine.Config(
+   * Units.Volts.per(Units.Second).of(0.2),
+   * Units.Volt.of(0.4),
+   * Units.Second.of(6)),
+   * new SysIdRoutine.Mechanism(new Consumer<Voltage>() {
+   * 
+   * @Override
+   * public void accept(Voltage value) {
+   * arcade(value.in(Units.Volt), 0);
+   * }
+   * }, new Consumer<SysIdRoutineLog>() {
+   * 
+   * @Override
+   * public void accept(SysIdRoutineLog log) {
+   * log.motor("drive")
+   * .voltage(Units.Volt.of(driveThrottle))
+   * .linearPosition(Units.Meter.of(leftEncoder.getDistance()))
+   * .linearVelocity(Units.MetersPerSecond.of(leftEncoder.getRate()))
+   * .linearAcceleration(Units.MetersPerSecondPerSecond.of(imu.getAccelX()));
+   * }
+   * }, this));
+   */
 
   /* SysId routine for turn */
-  /*public final SysIdRoutine sysIdTurn = new SysIdRoutine(
-      new SysIdRoutine.Config(
-          Units.Volts.per(Units.Second).of(0.1),
-          Units.Volt.of(0.4),
-          Units.Second.of(6)),
-      new SysIdRoutine.Mechanism(new Consumer<Measure<Voltage>>() {
-        @Override
-        public void accept(Measure<Voltage> value) {
-          arcade(0, value.in(Units.Volt));
-        }
-      }, new Consumer<SysIdRoutineLog>() {
-        @Override
-        public void accept(SysIdRoutineLog log) {
-          log.motor("turn")
-              .voltage(Units.Volt.of(turnThrottle))
-              .angularPosition(Units.Degrees.of(imu.getAngle(imu.getYawAxis())))
-              .angularVelocity(Units.DegreesPerSecond.of(imu.getRate(imu.getYawAxis())))
-              .angularAcceleration(Units.DegreesPerSecond.per(Units.Second).of(imu.getYFilteredAccelAngle()));
-        }
-      }, this));*/
+  /*
+   * public final SysIdRoutine sysIdTurn = new SysIdRoutine(
+   * new SysIdRoutine.Config(
+   * Units.Volts.per(Units.Second).of(0.1),
+   * Units.Volt.of(0.4),
+   * Units.Second.of(6)),
+   * new SysIdRoutine.Mechanism(new Consumer<Voltage>() {
+   * 
+   * @Override
+   * public void accept(Voltage value) {
+   * arcade(0, value.in(Units.Volt));
+   * }
+   * }, new Consumer<SysIdRoutineLog>() {
+   * 
+   * @Override
+   * public void accept(SysIdRoutineLog log) {
+   * log.motor("turn")
+   * .voltage(Units.Volt.of(turnThrottle))
+   * .angularPosition(Units.Degrees.of(imu.getAngle(imu.getYawAxis())))
+   * .angularVelocity(Units.DegreesPerSecond.of(imu.getRate(imu.getYawAxis())))
+   * .angularAcceleration(Units.DegreesPerSecond.per(Units.Second).of(imu.
+   * getYFilteredAccelAngle()));
+   * }
+   * }, this));
+   */
 
   private double simNoise(double in){
     if(Robot.isReal()){return in;}

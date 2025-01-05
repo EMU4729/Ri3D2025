@@ -5,7 +5,7 @@ import java.util.List;
 
 import edu.wpi.first.wpilibj.util.Color;
 
-public class RainbowLEDCommand extends LEDCommandBase {
+public class RainbowLEDCommand extends LEDCommand {
   private int firstHue = 0;
   private final int hueStep = 2;
   private int delayIdx = 0;

@@ -9,7 +9,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
@@ -71,7 +70,7 @@ public class ElevatorSub extends SubsystemBase {
         ElevatorConstants.MAX_HEIGHT,
         true,
         ElevatorConstants.MIN_HEIGHT,
-        VecBuilder.fill(0.01));
+        0.01);
 
     mech2d = new Mechanism2d(2, 3);
     mech2dRoot = mech2d.getRoot("Elevator Root", 1, 1);

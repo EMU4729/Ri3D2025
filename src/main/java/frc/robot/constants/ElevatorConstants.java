@@ -38,6 +38,8 @@ public class ElevatorConstants {
       Units.inchesToMeters(47.625) - GROUND_TO_RAMP_METERS };
 
   public static final DCMotor GEARBOX = DCMotor.getFalcon500(1);
+  public static final double ELEVATOR_KV = 1;
+  public static final double ELEVATOR_KA = 1;
   public static final double ELEVATOR_GEARING_RATIO = 50;
   public static final double ELEVATOR_MASS = 1;
   public static final double ELEVATOR_DRUM_RADIUS = 0.5;
