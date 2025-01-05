@@ -42,7 +42,7 @@ public class TeleopDriveArcade extends Command {
 
   @Override
   public void execute() {
-    double[] control = settings.fitTank(OI.pilot.getLeftY(), OI.pilot.getRightX());
+    double[] control = settings.fitTank(OI.pilot.getLeftY(), OI.pilot.getRightX(), OI.pilot.rightBumper().getAsBoolean()?1:0, OI.pilot.getRightTriggerAxis());
     double throttle = control[0];
     double steering = control[2];
 
