@@ -3,7 +3,7 @@ package frc.robot.LEDs;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class SolidLEDCommand extends LEDCommandBase {
+public class SolidLEDCommand extends LEDCommand {
   protected Color color;
   private Command superRef;
 

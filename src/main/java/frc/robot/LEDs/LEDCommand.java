@@ -6,17 +6,17 @@ import java.util.List;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems;
 
-public class LEDCommandBase extends Command {
+public class LEDCommand extends Command {
   protected List<LEDZone> zones;
 
-  public LEDCommandBase withZone(){
+  public LEDCommand withZone(){
     return withZone(Subsystems.ledZones);
   }
 
-  public LEDCommandBase withZone(int zone){
+  public LEDCommand withZone(int zone){
     return withZone(new int[]{zone});
   } 
-  public LEDCommandBase withZone(int[] zonesArr){
+  public LEDCommand withZone(int[] zonesArr){
     this.zones = new ArrayList<LEDZone>();
     for(LEDZone zone : Subsystems.ledZones){
       for(int i = 0; i < zonesArr.length; i++){
@@ -28,7 +28,7 @@ public class LEDCommandBase extends Command {
     this.zones.forEach((zone)->addRequirements(zone));
     return this;
   } 
-  public LEDCommandBase withZone(List<LEDZone> zones){
+  public LEDCommand withZone(List<LEDZone> zones){
     this.zones = zones;
     this.zones.forEach((zone)->addRequirements(zone));
     return this;
