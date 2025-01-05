@@ -33,8 +33,11 @@ public class EncoderSupplier implements Supplier<Encoder> {
 
     Encoder encoder = new Encoder(port[0], port[1], invert, Encoder.EncodingType.k2X);
     encoder.setDistancePerPulse(steps);
+
+    // ??? - neel
     encoder.setMinRate(0.1 * steps);
     encoder.setMinRate(10);
+
     encoder.setSamplesToAverage(5);
     return encoder;
   }
