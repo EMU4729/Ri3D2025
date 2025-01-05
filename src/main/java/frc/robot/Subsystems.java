@@ -6,6 +6,7 @@ import java.util.List;
 
 import frc.robot.LEDs.LEDZone;
 import frc.robot.subsystems.DriveSub;
+import frc.robot.subsystems.NavigationSub;
 
 /**
  * Subsystems - Use this class to initialize and access all subsystems globally.
@@ -16,4 +17,5 @@ public class Subsystems {
       new LEDZone(70, 91, 1),
       new LEDZone(0, 59, 2)));
   public static final DriveSub drive = new DriveSub();
+  public static final NavigationSub nav = new NavigationSub();
 }

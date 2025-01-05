@@ -1,41 +1,29 @@
 package frc.robot.subsystems;
 
-import java.lang.reflect.Field;
-import java.util.Random;
-import java.util.function.Consumer;
-
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.simulation.ADIS16470_IMUSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
+import frc.robot.Subsystems;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.SimConstants;
-import frc.robot.utils.PhotonBridge;
 
 /**
  * Drive Subsystem.
@@ -48,17 +36,12 @@ public class DriveSub extends SubsystemBase {
   private final WPI_TalonSRX rightMaster = DriveConstants.MOTOR_ID_RM.get();
   private final WPI_TalonSRX rightSlave = DriveConstants.MOTOR_ID_RS.get();
 
-  private final ADIS16470_IMU imu = new ADIS16470_IMU();
   private final Encoder leftEncoder = DriveConstants.ENCODER_ID_L.get();
   private final Encoder rightEncoder = DriveConstants.ENCODER_ID_R.get();
-  private final PhotonBridge photon = new PhotonBridge();
-  private final Field2d field = new Field2d();
-
   public final DifferentialDrive drive; // pub for shuffleboard
-  public final DifferentialDrivePoseEstimator poseEstimator = new DifferentialDrivePoseEstimator(
-      DriveConstants.KINEMATICS,
-      Rotation2d.fromDegrees(imu.getAngle(IMUAxis.kZ)),
-      0, 0, new Pose2d());
+
+  public final EncoderSim leftEncoderSim = new EncoderSim(leftEncoder);
+  public final EncoderSim rightEncoderSim = new EncoderSim(rightEncoder);
 
   // Simulation Variables
   /** @wip add corrected values */
@@ -68,12 +51,10 @@ public class DriveSub extends SubsystemBase {
       SimConstants.KV_ANGULAR,
       SimConstants.KA_ANGULAR);
 
-  public final ADIS16470_IMUSim imuSim = new ADIS16470_IMUSim(imu);
-  public final EncoderSim leftEncoderSim = new EncoderSim(leftEncoder);
-  public final EncoderSim rightEncoderSim = new EncoderSim(rightEncoder);
   private final double randomBiasSim = (Math.random()-0.5)/6;
 
-  private final PIDController steerPID = new PIDController(0.01, 0, 0.001);
+  private final PIDController steerPID = new PIDController(0.01, 0.00001, 0.001);
+  private final PIDController drivePID = new PIDController(0.1, 0.00001, 0.001);
 
   private double driveThrottle;
   private double turnThrottle;
@@ -88,30 +69,25 @@ public class DriveSub extends SubsystemBase {
 
     drive = new DifferentialDrive(leftMaster, rightMaster);
 
-    SmartDashboard.putData(field);
 
 
     
     addChild("Differential Drive", drive);
   }
 
-  @Override
-  public void periodic() {
-    poseEstimator.update(
-        Rotation2d.fromDegrees(imu.getAngle(IMUAxis.kZ)),
-        leftEncoder.getDistance(), rightEncoder.getDistance());
-  }
-
-  public Pose2d getPose() {
-    return poseEstimator.getEstimatedPosition();
-  }
-
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
   }
+  public DifferentialDriveWheelPositions getWheelPositions() {
+    return new DifferentialDriveWheelPositions(leftEncoder.getRate(), rightEncoder.getRate());
+  }
 
-  public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
-    poseEstimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
+  public double getLeftDistance(){
+    return leftEncoder.getDistance();
+  }
+
+  public double getRightDistance(){
+    return rightEncoder.getDistance();
   }
 
   /**
@@ -120,12 +96,23 @@ public class DriveSub extends SubsystemBase {
    * @param angle
    */
   public void angleHold(double speed, Rotation2d angle){
-    double error = angle.minus(Rotation2d.fromDegrees(imu.getAngle())).getDegrees();
+    double error = angle.minus(Subsystems.nav.getYaw()).getDegrees();
 
     if(Math.abs(error) > 10){speed = 0;}
 
     double steer = -steerPID.calculate(error);
     arcade(speed, steer);
+  }
+
+  public boolean driveTo(Pose2d targetPose, double tolerance){
+    NavigationSub nav = Subsystems.nav;
+
+    Pose2d error = targetPose.relativeTo(nav.getPose());
+    double distError = error.getTranslation().getNorm();
+    if(distError < tolerance){return true;}
+
+    angleHold(drivePID.calculate(distError), targetPose.getRotation().minus(nav.getYaw()));
+    return false;
   }
 
   /**
@@ -196,10 +183,6 @@ public class DriveSub extends SubsystemBase {
     rightEncoderSim.setDistance(drivetrainSimulator.getRightPositionMeters());
     rightEncoderSim.setRate(drivetrainSimulator.getRightVelocityMetersPerSecond());
 
-    photon.simulationPeriodic(drivetrainSimulator.getPose());
-    imuSim.setGyroAngleZ(drivetrainSimulator.getHeading().getDegrees());
-
-    field.setRobotPose(drivetrainSimulator.getPose());
   }
 
   /* SysId routine for drive */
