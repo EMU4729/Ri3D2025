@@ -4,10 +4,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.TemporalAmount;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Subsystems;
+import frc.robot.subsystems.DriveSub;
+import frc.robot.subsystems.NavigationSub;
 
 public class DriveAtAngle extends Command {
   private Instant end; 
@@ -31,7 +34,9 @@ public class DriveAtAngle extends Command {
   @Override
   public void execute() {
     super.execute();
-    Subsystems.drive.angleHold(speed, angle);
+    DriveSub drive = Subsystems.drive;
+    Rotation2d angleError = drive.calcAngleError(angle);
+    drive.arcade(angleError.getDegrees() > 10 ? 0:speed, drive.calcSteer(angleError));
   }
   
   @Override
