@@ -38,20 +38,14 @@ public class ElevatorSub extends SubsystemBase {
 
   private final Encoder encoder = ElevatorConstants.ENCODER_ID.get();
   private final EncoderSim encoderSim = new EncoderSim(encoder);
+
   private final PIDController upperController = new PIDController(
-      ElevatorConstants.UPPER_P,
-      0,
-      ElevatorConstants.UPPER_D);
+      ElevatorConstants.UPPER_P, 0, ElevatorConstants.UPPER_D);
   private final PIDController lowerController = new PIDController(
-      ElevatorConstants.LOWER_P,
-      0,
-      ElevatorConstants.LOWER_D);
+      ElevatorConstants.LOWER_P, 0, ElevatorConstants.LOWER_D);
+
   private final TalonFX motor = new TalonFX(ElevatorConstants.MOTOR_ID);
   private final TalonFXSimState motorSim = motor.getSimState();
-  // private final PositionVoltage liftController = new
-  // PositionVoltage(0).withSlot(0);
-  // private final PositionVoltage liftControllerBottom = new
-  // PositionVoltage(0).withSlot(1);
 
   private final ElevatorSim elevatorSim;
 
@@ -166,22 +160,5 @@ public class ElevatorSub extends SubsystemBase {
       motor.set(out);
       protectionState = ProtectionState.Upper;
     }
-
-    // if (getPosition() < LOWER_PROTECTION_HEIGHT
-    // && targetHeight < LOWER_PROTECTION_HEIGHT
-    // && protectionState != 1) {
-    // liftMotor.setControl(liftControllerBottom.withPosition(targetHeight));
-    // protectionState = 1;
-    /*
-     * } else if(getPosition() < UPPER_PROTECTION_HEIGHT && targetHeight <
-     * UPPER_PROTECTION_HEIGHT) {
-     * liftMotor.setControl(liftController.withPosition(
-     * UPPER_PROTECTION_HEIGHT-0.01;
-     * ));
-     */
-    // } else if (protectionState != 3) {
-    // liftMotor.setControl(liftController.withPosition(targetHeight));
-    // protectionState = 3;
-    // }
   }
 }
