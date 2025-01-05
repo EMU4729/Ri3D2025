@@ -1,11 +1,13 @@
 package frc.robot.subsystems;
 
 import java.lang.reflect.Field;
+import java.util.Random;
 import java.util.function.Consumer;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,6 +32,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Robot;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.SimConstants;
 import frc.robot.utils.PhotonBridge;
@@ -68,6 +71,9 @@ public class DriveSub extends SubsystemBase {
   public final ADIS16470_IMUSim imuSim = new ADIS16470_IMUSim(imu);
   public final EncoderSim leftEncoderSim = new EncoderSim(leftEncoder);
   public final EncoderSim rightEncoderSim = new EncoderSim(rightEncoder);
+  private final double randomBiasSim = (Math.random()-0.5)/6;
+
+  private final PIDController steerPID = new PIDController(0.01, 0, 0.001);
 
   private double driveThrottle;
   private double turnThrottle;
@@ -83,6 +89,8 @@ public class DriveSub extends SubsystemBase {
     drive = new DifferentialDrive(leftMaster, rightMaster);
 
     SmartDashboard.putData(field);
+
+
     
     addChild("Differential Drive", drive);
   }
@@ -107,14 +115,28 @@ public class DriveSub extends SubsystemBase {
   }
 
   /**
+   * 
+   * @param speed
+   * @param angle
+   */
+  public void angleHold(double speed, Rotation2d angle){
+    double error = angle.minus(Rotation2d.fromDegrees(imu.getAngle())).getDegrees();
+
+    if(Math.abs(error) > 10){speed = 0;}
+
+    double steer = -steerPID.calculate(error);
+    arcade(speed, steer);
+  }
+
+  /**
    * Tank drive.
    * 
    * @param leftSpeed  The left speed.
    * @param rightSpeed The right speed.
    */
   public void tank(double leftSpeed, double rightSpeed) {
-    leftSpeed = MathUtil.clamp(leftSpeed, -1, 1);
-    rightSpeed = MathUtil.clamp(rightSpeed, -1, 1);
+    leftSpeed = MathUtil.clamp(simNoise(leftSpeed), -1, 1);
+    rightSpeed = MathUtil.clamp(simNoise(rightSpeed), -1, 1);
     drive.tankDrive(leftSpeed, rightSpeed, false);
   }
 
@@ -138,6 +160,7 @@ public class DriveSub extends SubsystemBase {
    * @param steering The steering
    */
   public void arcade(double throttle, double steering) {
+    if(throttle != 0 || steering != 0){steering = simNoise(steering);}
     if (DriveConstants.USE_CLAMPING) {
       driveThrottle = MathUtil.clamp(driveThrottle, -0.4, 0.4);
       turnThrottle = MathUtil.clamp(turnThrottle, -0.8, 0.8);
@@ -222,4 +245,9 @@ public class DriveSub extends SubsystemBase {
               .angularAcceleration(Units.DegreesPerSecond.per(Units.Second).of(imu.getYFilteredAccelAngle()));
         }
       }, this));*/
+
+  private double simNoise(double in){
+    if(Robot.isReal()){return in;}
+    return in + ((Math.random()-0.5) / 5) + randomBiasSim;
+  }
 }
