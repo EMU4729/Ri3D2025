@@ -13,10 +13,4 @@ public final class Variables {
    * Bool to invert robot drive direction flipping the apparent front of the robot
    */
   public static boolean invertDriveDirection = false;
-
-  /** LED string brightness modifier (0-1) */
-  public static double ledBrightnessMod = 1;
-  public static boolean driveSlow = false;
-
-  public static boolean fieldRelative = true;
 }
