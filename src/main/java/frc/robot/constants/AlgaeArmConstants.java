@@ -11,7 +11,7 @@ public class AlgaeArmConstants {
   protected AlgaeArmConstants() {
   }
 
-  public static final int MOTOR_ID = 3;
+  public static final int MOTOR_ID = 7;
 
   // public static final List<Angle> PIVOT_ANGLES = List.of(
   // Degrees.of(0), Degrees.of(35), Degrees.of(200), Degrees.of(220));

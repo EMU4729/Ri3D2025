@@ -20,7 +20,7 @@ public class ElevatorConstants {
   public static final double ROLLER_CIRCUMFERENCE_METERS = Math.PI * ROLLER_DIAMETER_METERS;
 
   /** main elevator motor */
-  public static final int MOTOR_ID = 2;
+  public static final int MOTOR_ID = 5;
   /** encoder connected to measuring tape (genuis, btw) */
   public static final EncoderSupplier ENCODER_ID = new EncoderSupplier(
       new int[] { 0, 1 },
