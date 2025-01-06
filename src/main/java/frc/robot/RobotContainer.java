@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.LEDs.FlashSolidLEDCommand;
 import frc.robot.LEDs.RepeatedFlashLEDCommand;
 import frc.robot.auto.AutoProvider;
+import frc.robot.commands.ElevatorMovementCommand;
+import frc.robot.commands.ElevatorMovementCommand.Direction;
 import frc.robot.teleop.TeleopProvider;
 
 /**
@@ -68,6 +70,10 @@ public class RobotContainer {
     OI.pilot.x().onTrue(new RepeatedFlashLEDCommand(
         (FlashSolidLEDCommand) (new FlashSolidLEDCommand(Color.kBlue, 200).withZone(new int[] { 0 })),
         5));
+
+    // Elevator movement
+    OI.pilot.povUp().onTrue(new ElevatorMovementCommand(Direction.Up));
+    OI.pilot.povDown().onTrue(new ElevatorMovementCommand(Direction.Down));
 
     // Drive bindings handled in teleop command
   }

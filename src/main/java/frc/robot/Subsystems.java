@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.robot.LEDs.LEDZone;
 import frc.robot.subsystems.DriveSub;
+import frc.robot.subsystems.ElevatorSub;
 import frc.robot.subsystems.NavigationSub;
 
 /**
@@ -18,4 +20,5 @@ public class Subsystems {
       new LEDZone(0, 59, 2)));
   public static final DriveSub drive = new DriveSub();
   public static final NavigationSub nav = new NavigationSub();
+  public static final ElevatorSub elevator = new ElevatorSub();
 }
