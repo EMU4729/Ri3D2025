@@ -28,7 +28,10 @@ public class CoralArmSub extends SubsystemBase {
     return encoder.getDistance();
   }
 
-  public void setTargetAngle(Angle targetAngleDegrees) {setTargetAngle(targetAngleDegrees.in(Degrees));}
+  public void setTargetAngle(Angle targetAngle) {
+    setTargetAngle(targetAngle.in(Degrees));
+  }
+
   public void setTargetAngle(double targetAngleDegrees) {
     controller.setSetpoint(targetAngleDegrees);
   }
