@@ -15,7 +15,7 @@ public class ElevatorConstants {
   /** main elevator motor */
   public static final int MOTOR_ID = 2;
   /** encoder connected to measuring tape (genuis, btw) */
-  public static final EncoderSupplier ENCODER_ID = new EncoderSupplier(new int[] { 0, 1 }, 999);
+  public static final EncoderSupplier ENCODER_ID = new EncoderSupplier(new int[] { 0, 1 }, 0.0002);
 
   /** distance from ground to the bottom of the ramp at lowest extension */
   public static final double GROUND_TO_RAMP_METERS = 0;

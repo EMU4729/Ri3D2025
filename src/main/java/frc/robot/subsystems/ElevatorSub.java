@@ -5,6 +5,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import edu.wpi.first.hal.simulation.EncoderDataJNI;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -75,9 +76,12 @@ public class ElevatorSub extends SubsystemBase {
     // In this method, we update our simulation of what our elevator is doing
     // First, we set our "inputs" (voltages)
     elevatorSim.setInput(motorSim.getMotorVoltage());
+    elevatorSim.update(0.02);
+    
 
     // Next, we update it. The standard loop time is 20ms.
     System.out.println(elevatorSim.getPositionMeters());
+    System.out.println(motorSim.getMotorVoltage());
 
     // Finally, we set our simulated encoder's readings and simulated battery
     // voltage
