@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.robot.LEDs.LEDZone;
 import frc.robot.subsystems.DriveSub;
 import frc.robot.subsystems.ElevatorSub;
+import frc.robot.subsystems.FlowerSub;
 import frc.robot.subsystems.NavigationSub;
+import frc.robot.subsystems.ArmSub;
 
 /**
  * Subsystems - Use this class to initialize and access all subsystems globally.
@@ -21,4 +22,6 @@ public class Subsystems {
   public static final DriveSub drive = new DriveSub();
   public static final NavigationSub nav = new NavigationSub();
   public static final ElevatorSub elevator = new ElevatorSub();
+  public static final FlowerSub flower = new FlowerSub();
+  public static final ArmSub arm = new ArmSub();
 }

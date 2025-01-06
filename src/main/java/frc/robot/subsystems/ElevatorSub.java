@@ -68,7 +68,6 @@ public class ElevatorSub extends SubsystemBase {
 
   public void setSimHeight(double height) {
     elevatorSim.setState(height, 0);
-    periodic();
   }
 
   @Override
@@ -76,6 +75,8 @@ public class ElevatorSub extends SubsystemBase {
     // In this method, we update our simulation of what our elevator is doing
     // First, we set our "inputs" (voltages)
     elevatorSim.setInput(motorSim.getMotorVoltage());
+
+    // Next, we update it. The standard loop time is 20ms.
     elevatorSim.update(0.02);
     
 
