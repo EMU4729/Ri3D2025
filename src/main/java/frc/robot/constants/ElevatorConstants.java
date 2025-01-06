@@ -30,23 +30,23 @@ public class ElevatorConstants {
   public static final double GROUND_TO_RAMP_METERS = 0;
 
   /** p constant for elevator motor pid upper */
-  public static final double UPPER_P = 0.1;
+  public static final double PID_P = 0.1;
   /** i constant for elevator motor pid upper */
-  public static final double UPPER_I = 0;
+  public static final double PID_I = 0;
   /** d constant for elevator motor pid upper */
-  public static final double UPPER_D = 0;
+  public static final double PID_D = 0;
 
   public static final TrapezoidProfile.Constraints MOTION_CONSTRAINTS = new TrapezoidProfile.Constraints(1, 1);
 
   public static class HEIGHTS {
     public static double STOW = 0.0;
-    public static double CORAL_LOAD = Units.inchesToMeters(30)      - GROUND_TO_RAMP_METERS;
-    public static double CORAL_L1 = Units.inchesToMeters(18)        - GROUND_TO_RAMP_METERS;
-    public static double CORAL_L2 = Units.inchesToMeters(31.875)    - GROUND_TO_RAMP_METERS;
-    public static double CORAL_L3 = Units.inchesToMeters(47.625)    - GROUND_TO_RAMP_METERS;
+    public static double CORAL_LOAD = Units.inchesToMeters(30) - GROUND_TO_RAMP_METERS;
+    public static double CORAL_L1 = Units.inchesToMeters(18) - GROUND_TO_RAMP_METERS;
+    public static double CORAL_L2 = Units.inchesToMeters(31.875) - GROUND_TO_RAMP_METERS;
+    public static double CORAL_L3 = Units.inchesToMeters(47.625) - GROUND_TO_RAMP_METERS;
     public static double ALGAE_PROCESSOR = 0.0;
-    public static double ALGAE_L2 = Units.inchesToMeters(31.875)        - GROUND_TO_RAMP_METERS;
-    public static double ALGAE_L3 = Units.inchesToMeters(47.625)        - GROUND_TO_RAMP_METERS;
+    public static double ALGAE_L2 = Units.inchesToMeters(31.875) - GROUND_TO_RAMP_METERS;
+    public static double ALGAE_L3 = Units.inchesToMeters(47.625) - GROUND_TO_RAMP_METERS;
   }
 
   // sim stuff
@@ -58,7 +58,5 @@ public class ElevatorConstants {
   public static final double ELEVATOR_DRUM_RADIUS = 0.5;
   public static final double MIN_HEIGHT = 0;
   public static final double MAX_HEIGHT = 2;
-
-
 
 }

@@ -7,8 +7,16 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
@@ -19,17 +27,18 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ElevatorConstants;
+import frc.robot.utils.NTProfiledPID;
 
 public class ElevatorSub extends SubsystemBase {
-  private final Encoder encoder = ElevatorConstants.ENCODER_ID.get();
-  private final EncoderSim encoderSim = new EncoderSim(encoder);
-
-  private final ProfiledPIDController controller = new ProfiledPIDController(ElevatorConstants.UPPER_P,
-      ElevatorConstants.UPPER_I, ElevatorConstants.UPPER_D, ElevatorConstants.MOTION_CONSTRAINTS);
-
   private final TalonFX motor = new TalonFX(ElevatorConstants.MOTOR_ID);
-  private final TalonFXSimState motorSim = motor.getSimState();
+  private final Encoder encoder = ElevatorConstants.ENCODER_ID.get();
+  private final ProfiledPIDController controller = new ProfiledPIDController(ElevatorConstants.PID_P,
+      ElevatorConstants.PID_I, ElevatorConstants.PID_D, ElevatorConstants.MOTION_CONSTRAINTS);
+  private final NTProfiledPID ntPid = new NTProfiledPID(controller, "elevator");
 
+  // sim stuff
+  private final TalonFXSimState motorSim = motor.getSimState();
+  private final EncoderSim encoderSim = new EncoderSim(encoder);
   private final ElevatorSim elevatorSim = new ElevatorSim(
       ElevatorConstants.GEARBOX,
       ElevatorConstants.ELEVATOR_GEARING_RATIO,
@@ -107,7 +116,7 @@ public class ElevatorSub extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println(controller.getGoal().position);
+    ntPid.update();
     elevatorMech2d.setLength(getHeight());
 
     if (!DriverStation.isEnabled()) {
@@ -125,6 +134,13 @@ public class ElevatorSub extends SubsystemBase {
     // (double) (Math.round(liftMotor.getMotorVoltage().getValue() * 10000)) / 10000
     // + " " +
     // targetHeight);
+
+    System.out.println(controller.getP());
+    System.out.println(controller.getI());
+    System.out.println(controller.getD());
+    System.out.println(controller.getConstraints().maxAcceleration);
+    System.out.println(controller.getConstraints().maxVelocity);
+    System.out.println();
 
     var out = controller.calculate(getHeight());
     out = MathUtil.clamp(out, -1, 1);
