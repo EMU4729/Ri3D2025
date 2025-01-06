@@ -71,14 +71,6 @@ public class RobotContainer {
         (FlashSolidLEDCommand) (new FlashSolidLEDCommand(Color.kBlue, 200).withZone(new int[] { 0 })),
         5));
 
-    // Elevator movement
-    OI.pilot.povUp().onTrue(new ElevatorMovementCommand(ElevatorMovementCommand.Direction.Up));
-    OI.pilot.povDown().onTrue(new ElevatorMovementCommand(ElevatorMovementCommand.Direction.Down));
-
-    // Pivot movement
-    OI.pilot.povLeft().onTrue(new ArmMovementCommand(ArmMovementCommand.Direction.TowardsIntake));
-    OI.pilot.povRight().onTrue(new ArmMovementCommand(ArmMovementCommand.Direction.TowardsReef));
-
     // Drive bindings handled in teleop command
   }
 
