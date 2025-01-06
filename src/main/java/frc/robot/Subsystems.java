@@ -10,6 +10,7 @@ import frc.robot.subsystems.ElevatorSub;
 import frc.robot.subsystems.FlowerSub;
 import frc.robot.subsystems.NavigationSub;
 import frc.robot.subsystems.AlgaeArmSub;
+import frc.robot.subsystems.AlgaeGrabberSub;
 import frc.robot.subsystems.CoralArmSub;
 
 /**
@@ -26,4 +27,5 @@ public class Subsystems {
   public static final FlowerSub flower = new FlowerSub();
   public static final AlgaeArmSub algaeArm = new AlgaeArmSub();
   public static final CoralArmSub coralArm = new CoralArmSub();
+  public static final AlgaeGrabberSub algaeGrabber = new AlgaeGrabberSub();
 }
