@@ -107,6 +107,7 @@ public class ElevatorSub extends SubsystemBase {
 
   @Override
   public void periodic() {
+    System.out.println(controller.getGoal().position);
     elevatorMech2d.setLength(getHeight());
 
     if (!DriverStation.isEnabled()) {

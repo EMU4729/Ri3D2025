@@ -9,7 +9,9 @@ import frc.robot.constants.CoralArmConstants;
 import frc.robot.constants.ElevatorConstants;
 
 public class ActivateAlgaeUnload extends ActivateBase{
-    public ActivateAlgaeUnload(){
+    public ActivateAlgaeUnload(){this(false);}
+    public ActivateAlgaeUnload(boolean StayUnstowed){
+        super(StayUnstowed);
     }
 
     @Override

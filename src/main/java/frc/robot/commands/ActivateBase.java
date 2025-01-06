@@ -9,7 +9,10 @@ import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.ElevatorSub;
 
 public class ActivateBase extends Command{
-    public ActivateBase(){
+    boolean StayUnstowed;
+
+    public ActivateBase(){this(false);}
+    public ActivateBase(Boolean StayUnstowed){
         addRequirements(/*Subsystems.coralArm,*/ Subsystems.algaeArm, Subsystems.elevator);
     }
 
@@ -21,6 +24,7 @@ public class ActivateBase extends Command{
 
     @Override
     public void end(boolean interrupted) {
+        if(StayUnstowed){return;}
         // Subsystems.coralArm.stow();
         Subsystems.algaeArm.setTargetAngle(AlgaeArmConstants.ANGLES.STOW);
         Subsystems.elevator.setTargetHeight(ElevatorConstants.HEIGHTS.STOW);

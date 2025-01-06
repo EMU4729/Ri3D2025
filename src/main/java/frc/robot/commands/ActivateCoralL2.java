@@ -9,8 +9,9 @@ import frc.robot.constants.CoralArmConstants;
 import frc.robot.constants.ElevatorConstants;
 
 public class ActivateCoralL2 extends ActivateBase{
-    public ActivateCoralL2(){
-        addRequirements(/*Subsystems.coralArm,*/ Subsystems.elevator);
+    public ActivateCoralL2(){this(false);}
+    public ActivateCoralL2(boolean StayUnstowed){
+        super(StayUnstowed);
     }
 
     @Override
