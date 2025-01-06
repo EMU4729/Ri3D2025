@@ -60,7 +60,7 @@ public class DriveSub extends SubsystemBase {
   private final double randomBiasSim = (Math.random() - 0.5) / 6;
 
   private final PIDController steerPID = new PIDController(0.01, 0.00001, 0.001);
-  private final PIDController drivePID = new PIDController(0.1, 0.00001, 0.001);
+  private final PIDController drivePID = new PIDController(0.2, 0.001, 0.001);
 
   private double driveThrottle;
   private double turnThrottle;
@@ -94,35 +94,6 @@ public class DriveSub extends SubsystemBase {
 
   public double getRightDistance() {
     return rightEncoder.getDistance();
-  }
-
-  /**
-   * 
-   * @param speed
-   * @param angle
-   */
-  public void angleHold(double speed, Rotation2d angle) {
-    double error = angle.minus(Subsystems.nav.getYaw()).getDegrees();
-
-    if (Math.abs(error) > 10) {
-      speed = 0;
-    }
-
-    double steer = -steerPID.calculate(error);
-    arcade(speed, steer);
-  }
-
-  public boolean driveTo(Pose2d targetPose, double tolerance) {
-    NavigationSub nav = Subsystems.nav;
-
-    Pose2d error = targetPose.relativeTo(nav.getPose());
-    double distError = error.getTranslation().getNorm();
-    if (distError < tolerance) {
-      return true;
-    }
-
-    angleHold(drivePID.calculate(distError), targetPose.getRotation().minus(nav.getYaw()));
-    return false;
   }
 
   /**
@@ -250,10 +221,21 @@ public class DriveSub extends SubsystemBase {
    * }, this));
    */
 
-  private double simNoise(double in) {
-    if (Robot.isReal()) {
-      return in;
-    }
-    return in + ((Math.random() - 0.5) / 5) + randomBiasSim;
+
+  private double simNoise(double in){
+    if(Robot.isReal()){return in;}
+    return in + ((Math.random()-0.5) / 5) + randomBiasSim;
+  }
+
+  public double calcDrive(double distError){
+    return -drivePID.calculate(distError);
+  }
+
+  public double calcSteer(Rotation2d angleError){
+    return -steerPID.calculate(angleError.getDegrees());
+  }
+
+  public Rotation2d calcAngleError(Rotation2d targetAngle){
+    return targetAngle.minus(Subsystems.nav.getYaw());
   }
 }

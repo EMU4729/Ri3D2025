@@ -27,7 +27,7 @@ public class AutoProvider {
     // }, Subsystems.swerveDrive));
     chooser.addOption("test", new TestAuto());
     chooser.addOption("test2", new SequentialCommandGroup(new DriveAtAngle(0.4, Rotation2d.fromDegrees(45), 4000), 
-                                                               new DriveToPose(new Pose2d(new Translation2d(20, 20), Rotation2d.fromDegrees(45)), 10)));
+                                                               new DriveToPose(new Translation2d(10, 5), 0.7, 0.1)));
     SmartDashboard.putData("Auto Chooser", chooser);
   }
 
