@@ -5,12 +5,12 @@ import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -24,7 +24,7 @@ import frc.robot.constants.AlgaeArmConstants;
 
 public class AlgaeArmSub extends SubsystemBase {
   private final TalonFX motor = new TalonFX(AlgaeArmConstants.MOTOR_ID);
-  private final PositionDutyCycle controller = new PositionDutyCycle(0).withSlot(0)
+  private final PositionVoltage controller = new PositionVoltage(0).withSlot(0)
       .withFeedForward(AlgaeArmConstants.PID_FF);
 
   // sim stuff
@@ -93,7 +93,7 @@ public class AlgaeArmSub extends SubsystemBase {
     motor.setControl(controller.withPosition(angle));
   }
 
-  public void setTargetAngle(Angle angle, double maxSpeed) {
+  public void setTargetAngle(Angle angle, double maxSpeed){
     motor.setControl(controller.withVelocity(maxSpeed).withPosition(angle));
   }
 
