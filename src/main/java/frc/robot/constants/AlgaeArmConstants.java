@@ -9,8 +9,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Angle;
 
-public class ArmConstants {
-  protected ArmConstants() {
+public class AlgaeArmConstants {
+  protected AlgaeArmConstants() {
   }
 
   public static final int MOTOR_ID = 3;

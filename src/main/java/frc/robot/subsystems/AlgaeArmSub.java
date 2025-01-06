@@ -19,51 +19,52 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.ArmConstants;
+import frc.robot.constants.AlgaeArmConstants;
 
-public class ArmSub extends SubsystemBase {
-  private final TalonFX motor = new TalonFX(ArmConstants.MOTOR_ID);
-  private final PositionVoltage controller = new PositionVoltage(0).withSlot(0).withFeedForward(ArmConstants.PID_FF);
+public class AlgaeArmSub extends SubsystemBase {
+  private final TalonFX motor = new TalonFX(AlgaeArmConstants.MOTOR_ID);
+  private final PositionVoltage controller = new PositionVoltage(0).withSlot(0)
+      .withFeedForward(AlgaeArmConstants.PID_FF);
 
   // sim stuff
   private final TalonFXSimState motorSim = motor.getSimState();
   private final SingleJointedArmSim armSim = new SingleJointedArmSim(
-      ArmConstants.GEARBOX,
-      ArmConstants.GEARING_RATIO,
-      SingleJointedArmSim.estimateMOI(ArmConstants.ARM_LENGTH_METERS, ArmConstants.ARM_MASS_KG),
-      ArmConstants.ARM_LENGTH_METERS,
-      ArmConstants.ARM_MIN_ANGLE.in(Radians),
-      ArmConstants.ARM_MAX_ANGLE.in(Radians),
+      AlgaeArmConstants.GEARBOX,
+      AlgaeArmConstants.GEARING_RATIO,
+      SingleJointedArmSim.estimateMOI(AlgaeArmConstants.ARM_LENGTH_METERS, AlgaeArmConstants.ARM_MASS_KG),
+      AlgaeArmConstants.ARM_LENGTH_METERS,
+      AlgaeArmConstants.ARM_MIN_ANGLE.in(Radians),
+      AlgaeArmConstants.ARM_MAX_ANGLE.in(Radians),
       false,
-      ArmConstants.ARM_MIN_ANGLE.in(Radians));
+      AlgaeArmConstants.ARM_MIN_ANGLE.in(Radians));
   private final Mechanism2d mech2d = new Mechanism2d(60, 60);
-  private final MechanismRoot2d armPivot = mech2d.getRoot("ArmPivot", 30, 30);
-  private final MechanismLigament2d armTower = armPivot.append(new MechanismLigament2d("ArmTower", 30, -90));
+  private final MechanismRoot2d armPivot = mech2d.getRoot("AlgaeArmPivot", 30, 30);
+  private final MechanismLigament2d armTower = armPivot.append(new MechanismLigament2d("AlgaeArmTower", 30, -90));
   private final MechanismLigament2d arm = armPivot.append(
       new MechanismLigament2d(
-          "Arm",
+          "AlgaeArm",
           30,
           Radians.of(armSim.getAngleRads()).in(Degrees),
           6,
           new Color8Bit(Color.kYellow)));
 
-  public ArmSub() {
+  public AlgaeArmSub() {
     final var motorConfig = new TalonFXConfiguration();
 
-    motorConfig.MotorOutput.Inverted = ArmConstants.MOTOR_INVERTED;
+    motorConfig.MotorOutput.Inverted = AlgaeArmConstants.MOTOR_INVERTED;
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     motorConfig.CurrentLimits.SupplyCurrentLimit = 40;
 
-    motorConfig.Slot0.kP = ArmConstants.PID_P;
-    motorConfig.Slot0.kI = ArmConstants.PID_I;
-    motorConfig.Slot0.kD = ArmConstants.PID_D;
+    motorConfig.Slot0.kP = AlgaeArmConstants.PID_P;
+    motorConfig.Slot0.kI = AlgaeArmConstants.PID_I;
+    motorConfig.Slot0.kD = AlgaeArmConstants.PID_D;
 
     motor.getConfigurator().apply(motorConfig);
     motor.setControl(controller);
 
-    SmartDashboard.putData("Pivot Sim", mech2d);
+    SmartDashboard.putData("Algae Arm Sim", mech2d);
   }
 
   @Override
