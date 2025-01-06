@@ -172,6 +172,8 @@ out/
 networktables.json
 simgui.json
 simgui-ds.json
+glass.json
+outlineviewer.json
 *-window.json
 
 # Simulation data log directory
