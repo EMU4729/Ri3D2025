@@ -11,7 +11,8 @@ public class AlgaeGrabberSub extends SubsystemBase {
   private final WPI_TalonSRX lowerMotor = AlgaeGrabberConstants.LOWER_MOTOR_ID.get();
 
   public AlgaeGrabberSub() {
-    // we're assuming one of lowerMotor or upperMotor is inverted
+    // we're assuming one of lowerMotor or upperMotor is inverted so that the
+    // rollers are either both spinning inwards or both spinning outwards
     lowerMotor.follow(upperMotor);
   }
 
