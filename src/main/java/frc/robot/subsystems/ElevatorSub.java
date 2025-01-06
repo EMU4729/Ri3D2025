@@ -80,8 +80,8 @@ public class ElevatorSub extends SubsystemBase {
     
 
     // Next, we update it. The standard loop time is 20ms.
-    System.out.println(elevatorSim.getPositionMeters());
-    System.out.println(motorSim.getMotorVoltage());
+    //System.out.println(elevatorSim.getPositionMeters());
+    //System.out.println(motorSim.getMotorVoltage());
 
     // Finally, we set our simulated encoder's readings and simulated battery
     // voltage

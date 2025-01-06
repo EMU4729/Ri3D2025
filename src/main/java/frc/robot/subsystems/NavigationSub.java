@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -47,7 +48,8 @@ public class NavigationSub extends SubsystemBase{
   }
 
   public void setCurrentPose(Pose2d newPose) {
-    poseEstimator.resetPosition(Rotation2d.fromDegrees(imu.getAngle()), 
+    imu.setGyroAngle(imu.getYawAxis(), newPose.getRotation().getDegrees());
+    poseEstimator.resetPosition(newPose.getRotation(), 
         Subsystems.drive.getWheelPositions(), newPose);
 
     if(Robot.isSimulation()){
@@ -68,6 +70,10 @@ public class NavigationSub extends SubsystemBase{
     poseEstimator.update(
         Rotation2d.fromDegrees(imu.getAngle(IMUAxis.kZ)),
         driveSub.getLeftDistance(), driveSub.getRightDistance());
+    //System.out.println(imu.getAngle() +" "+ driveSub.getLeftDistance() +" "+ driveSub.getRightDistance() );
+
+    
+    
     if(Robot.isReal()){
       field.setRobotPose(getPose());
     }
@@ -80,5 +86,13 @@ public class NavigationSub extends SubsystemBase{
     photon.simulationPeriodic(driveTrainSim.getPose());
     imuSim.setGyroAngleZ(driveTrainSim.getHeading().getDegrees());
     field.setRobotPose(driveTrainSim.getPose());
+
+    /*
+    Translation2d currentLoc = driveTrainSim.getPose().getTranslation();
+    driveTrainSim.setPose(new Pose2d(new Translation2d(
+      MathUtil.clamp(currentLoc.getX(), 0, 17.55),
+      MathUtil.clamp(currentLoc.getY(), 0, 8.05)),
+      driveTrainSim.getHeading())
+    );*/
   }
 }

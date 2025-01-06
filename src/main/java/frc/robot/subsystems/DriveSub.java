@@ -59,8 +59,8 @@ public class DriveSub extends SubsystemBase {
 
   private final double randomBiasSim = (Math.random() - 0.5) / 6;
 
-  private final PIDController steerPID = new PIDController(0.01, 0.00001, 0.001);
-  private final PIDController drivePID = new PIDController(0.2, 0.001, 0.001);
+  private final PIDController steerPID = new PIDController(0.025, 0.0001, 0.001);
+  private final PIDController drivePID = new PIDController(0.5, 0.01, 0.001);
 
   private double driveThrottle;
   private double turnThrottle;
@@ -224,7 +224,7 @@ public class DriveSub extends SubsystemBase {
 
   private double simNoise(double in){
     if(Robot.isReal()){return in;}
-    return in + ((Math.random()-0.5) / 5) + randomBiasSim;
+    return in;// + ((Math.random()-0.5) / 5) + randomBiasSim;
   }
 
   public double calcDrive(double distError){

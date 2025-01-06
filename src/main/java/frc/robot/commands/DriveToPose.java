@@ -31,6 +31,7 @@ public class DriveToPose extends Command {
 
   @Override
   public void initialize() {
+    translationError = new Translation2d(0,0);
     super.initialize();
   }
 
@@ -45,12 +46,14 @@ public class DriveToPose extends Command {
     translationError = targetLoc
                                               .minus(robotPose.getTranslation())
                                               .rotateBy(robotPose.getRotation().times(-1));
+    //translationError = new Translation2d(translationError.getX(), -translationError.getY());
     Rotation2d angleError = translationError.getAngle();
     double distError = translationError.getNorm();
 
     double steer = drive.calcSteer(angleError);
     double speed = MathUtil.clamp(drive.calcDrive(distError), -targetSpeed, targetSpeed);
 
+    System.out.println(speed +" "+ steer);
     drive.arcade(speed, steer);
   }
   
