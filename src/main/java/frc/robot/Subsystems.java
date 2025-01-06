@@ -9,6 +9,7 @@ import frc.robot.subsystems.DriveSub;
 import frc.robot.subsystems.ElevatorSub;
 import frc.robot.subsystems.FlowerSub;
 import frc.robot.subsystems.NavigationSub;
+import frc.robot.subsystems.PivotSub;
 
 /**
  * Subsystems - Use this class to initialize and access all subsystems globally.
@@ -22,4 +23,5 @@ public class Subsystems {
   public static final NavigationSub nav = new NavigationSub();
   public static final ElevatorSub elevator = new ElevatorSub();
   public static final FlowerSub flower = new FlowerSub();
+  public static final PivotSub pivot = new PivotSub();
 }
