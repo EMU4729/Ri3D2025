@@ -38,16 +38,16 @@ public class ElevatorConstants {
 
   public static final TrapezoidProfile.Constraints MOTION_CONSTRAINTS = new TrapezoidProfile.Constraints(1, 1);
 
-  /**
-   * ground, L1, L2, L3
-   * 
-   * distance values from game manual pages 23-24
-   */
-  public static final List<Double> EXTENSION_DISTS = List.of(
-      0.0,
-      Units.inchesToMeters(18) - GROUND_TO_RAMP_METERS,
-      Units.inchesToMeters(31.875) - GROUND_TO_RAMP_METERS,
-      Units.inchesToMeters(47.625) - GROUND_TO_RAMP_METERS);
+  public static class HEIGHTS {
+    public static double STOW = 0.0;
+    public static double CORAL_LOAD = Units.inchesToMeters(30)      - GROUND_TO_RAMP_METERS;
+    public static double CORAL_L1 = Units.inchesToMeters(18)        - GROUND_TO_RAMP_METERS;
+    public static double CORAL_L2 = Units.inchesToMeters(31.875)    - GROUND_TO_RAMP_METERS;
+    public static double CORAL_L3 = Units.inchesToMeters(47.625)    - GROUND_TO_RAMP_METERS;
+    public static double ALGAE_PROCESSOR = 0.0;
+    public static double ALGAE_L2 = Units.inchesToMeters(31.875)        - GROUND_TO_RAMP_METERS;
+    public static double ALGAE_L3 = Units.inchesToMeters(47.625)        - GROUND_TO_RAMP_METERS;
+  }
 
   // sim stuff
   public static final DCMotor GEARBOX = DCMotor.getFalcon500(1);
@@ -60,5 +60,5 @@ public class ElevatorConstants {
   public static final double MAX_HEIGHT = 2;
 
 
-  
+
 }
