@@ -27,14 +27,12 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ElevatorConstants;
-import frc.robot.utils.NTProfiledPID;
 
 public class ElevatorSub extends SubsystemBase {
   private final TalonFX motor = new TalonFX(ElevatorConstants.MOTOR_ID);
   private final Encoder encoder = ElevatorConstants.ENCODER_ID.get();
   private final ProfiledPIDController controller = new ProfiledPIDController(ElevatorConstants.PID_P,
       ElevatorConstants.PID_I, ElevatorConstants.PID_D, ElevatorConstants.MOTION_CONSTRAINTS);
-  private final NTProfiledPID ntPid = new NTProfiledPID(controller, "elevator");
 
   // sim stuff
   private final TalonFXSimState motorSim = motor.getSimState();
@@ -64,6 +62,7 @@ public class ElevatorSub extends SubsystemBase {
     motor.getConfigurator().apply(motorConfig);
 
     SmartDashboard.putData("Elevator Sim", mech2d);
+    SmartDashboard.putData("Elevator PID", controller);
   }
 
   public double getHeight() {
@@ -116,7 +115,6 @@ public class ElevatorSub extends SubsystemBase {
 
   @Override
   public void periodic() {
-    ntPid.update();
     elevatorMech2d.setLength(getHeight());
 
     if (!DriverStation.isEnabled()) {
