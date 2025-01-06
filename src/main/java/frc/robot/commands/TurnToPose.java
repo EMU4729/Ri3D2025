@@ -18,9 +18,11 @@ public class TurnToPose extends Command {
   private final Translation2d targetLoc;
   private final Rotation2d tollerance;
 
-  public TurnToPose(Translation2d targetLoc, Rotation2d tollerance){
+  public TurnToPose(Translation2d targetLoc, Rotation2d tollerance) {
     this.targetLoc = targetLoc;
     this.tollerance = tollerance;
+
+    addRequirements(Subsystems.drive);
   }
 
   @Override
@@ -37,19 +39,19 @@ public class TurnToPose extends Command {
     // robot relative
     Pose2d robotPose = nav.getPose();
     Translation2d translationError = targetLoc
-                                              .minus(robotPose.getTranslation())
-                                              .rotateBy(robotPose.getRotation().times(-1));
+        .minus(robotPose.getTranslation())
+        .rotateBy(robotPose.getRotation().times(-1));
 
     Rotation2d angleError = translationError.getAngle();
     drive.arcade(0, drive.calcSteer(angleError));
 
-    if(Math.abs(angleError.getRadians()) < tollerance.getRadians()){
+    if (Math.abs(angleError.getRadians()) < tollerance.getRadians()) {
       finished++;
-    } else { 
+    } else {
       finished = 0;
     }
   }
-  
+
   @Override
   public boolean isFinished() {
     return finished >= 10;

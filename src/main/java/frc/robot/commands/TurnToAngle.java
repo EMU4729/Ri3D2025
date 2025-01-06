@@ -1,25 +1,20 @@
 package frc.robot.commands;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.TemporalAmount;
-
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Subsystems;
 import frc.robot.subsystems.DriveSub;
-import frc.robot.subsystems.NavigationSub;
 
 public class TurnToAngle extends Command {
   private int finished = 0;
   private final Rotation2d angle;
   private final Rotation2d tollerance;
 
-  public TurnToAngle(Rotation2d angle, Rotation2d tollerance){
+  public TurnToAngle(Rotation2d angle, Rotation2d tollerance) {
     this.angle = angle;
     this.tollerance = tollerance;
+
+    addRequirements(Subsystems.drive);
   }
 
   @Override
@@ -34,13 +29,13 @@ public class TurnToAngle extends Command {
     Rotation2d angleError = drive.calcAngleError(angle);
     drive.arcade(0, drive.calcSteer(angleError));
 
-    if(Math.abs(angleError.getRadians()) < tollerance.getRadians()){
+    if (Math.abs(angleError.getRadians()) < tollerance.getRadians()) {
       finished++;
-    } else { 
+    } else {
       finished = 0;
     }
   }
-  
+
   @Override
   public boolean isFinished() {
     return finished >= 10;
