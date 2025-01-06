@@ -4,19 +4,13 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -85,7 +79,7 @@ public class DriveSub extends SubsystemBase {
   }
 
   public DifferentialDriveWheelPositions getWheelPositions() {
-    return new DifferentialDriveWheelPositions(leftEncoder.getRate(), rightEncoder.getRate());
+    return new DifferentialDriveWheelPositions(leftEncoder.getDistance(), rightEncoder.getDistance());
   }
 
   public double getLeftDistance() {
@@ -221,21 +215,22 @@ public class DriveSub extends SubsystemBase {
    * }, this));
    */
 
-
-  private double simNoise(double in){
-    if(Robot.isReal()){return in;}
-    return in + ((Math.random()-0.5) / 5) + randomBiasSim;
+  private double simNoise(double in) {
+    if (Robot.isReal()) {
+      return in;
+    }
+    return in + ((Math.random() - 0.5) / 5) + randomBiasSim;
   }
 
-  public double calcDrive(double distError){
+  public double calcDrive(double distError) {
     return -drivePID.calculate(distError);
   }
 
-  public double calcSteer(Rotation2d angleError){
+  public double calcSteer(Rotation2d angleError) {
     return -steerPID.calculate(angleError.getDegrees());
   }
 
-  public Rotation2d calcAngleError(Rotation2d targetAngle){
+  public Rotation2d calcAngleError(Rotation2d targetAngle) {
     return targetAngle.minus(Subsystems.nav.getYaw());
   }
 }

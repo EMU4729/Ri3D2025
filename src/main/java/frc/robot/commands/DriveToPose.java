@@ -1,15 +1,10 @@
 package frc.robot.commands;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.TemporalAmount;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Subsystems;
 import frc.robot.subsystems.DriveSub;
 import frc.robot.subsystems.NavigationSub;
@@ -20,18 +15,19 @@ public class DriveToPose extends Command {
   private final double targetSpeed;
   private final double tollerance;
 
-  private Translation2d translationError = new Translation2d(0,0);
+  private Translation2d translationError = new Translation2d(0, 0);
 
-
-  public DriveToPose(Translation2d targetPose, double targetSpeed, double tollerance){
+  public DriveToPose(Translation2d targetPose, double targetSpeed, double tollerance) {
     this.targetLoc = targetPose;
     this.targetSpeed = targetSpeed;
     this.tollerance = tollerance;
+
+    addRequirements(Subsystems.drive);
   }
 
   @Override
   public void initialize() {
-    translationError = new Translation2d(0,0);
+    translationError = new Translation2d(0, 0);
     super.initialize();
   }
 
@@ -44,19 +40,20 @@ public class DriveToPose extends Command {
     // robot relative
     Pose2d robotPose = nav.getPose();
     translationError = targetLoc
-                                              .minus(robotPose.getTranslation())
-                                              .rotateBy(robotPose.getRotation().times(-1));
-    //translationError = new Translation2d(translationError.getX(), -translationError.getY());
+        .minus(robotPose.getTranslation())
+        .rotateBy(robotPose.getRotation().times(-1));
+    // translationError = new Translation2d(translationError.getX(),
+    // -translationError.getY());
     Rotation2d angleError = translationError.getAngle();
     double distError = translationError.getNorm();
 
     double steer = drive.calcSteer(angleError);
     double speed = MathUtil.clamp(drive.calcDrive(distError), -targetSpeed, targetSpeed);
 
-    System.out.println(speed +" "+ steer);
+    // System.out.println(speed + " " + steer);
     drive.arcade(speed, steer);
   }
-  
+
   @Override
   public boolean isFinished() {
     return translationError.getX() < tollerance;

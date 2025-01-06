@@ -5,7 +5,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
-import edu.wpi.first.hal.simulation.EncoderDataJNI;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -45,7 +44,7 @@ public class ElevatorSub extends SubsystemBase {
 
   private final Mechanism2d mech2d = new Mechanism2d(20, 30);
   private final MechanismRoot2d mech2dRoot = mech2d.getRoot("Elevator Root", 10, 1);
-  private final MechanismLigament2d elevatoMech2d = mech2dRoot
+  private final MechanismLigament2d elevatorMech2d = mech2dRoot
       .append(new MechanismLigament2d("Elevator", elevatorSim.getPositionMeters(), 90));
 
   public ElevatorSub() {
@@ -78,11 +77,10 @@ public class ElevatorSub extends SubsystemBase {
 
     // Next, we update it. The standard loop time is 20ms.
     elevatorSim.update(0.02);
-    
 
     // Next, we update it. The standard loop time is 20ms.
-    //System.out.println(elevatorSim.getPositionMeters());
-    //System.out.println(motorSim.getMotorVoltage());
+    // System.out.println(elevatorSim.getPositionMeters());
+    // System.out.println(motorSim.getMotorVoltage());
 
     // Finally, we set our simulated encoder's readings and simulated battery
     // voltage
@@ -109,7 +107,7 @@ public class ElevatorSub extends SubsystemBase {
 
   @Override
   public void periodic() {
-    elevatoMech2d.setLength(getHeight());
+    elevatorMech2d.setLength(getHeight());
 
     if (!DriverStation.isEnabled()) {
       motor.set(0);
