@@ -2,9 +2,9 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems;
-import frc.robot.constants.PivotConstants;
+import frc.robot.constants.ArmConstants;
 
-public class PivotMovementCommand extends Command {
+public class ArmMovementCommand extends Command {
   public static enum Direction {
     TowardsReef,
     TowardsIntake
@@ -13,17 +13,17 @@ public class PivotMovementCommand extends Command {
   private final Direction direction;
   private static int i = 0;
 
-  public PivotMovementCommand(Direction direction) {
+  public ArmMovementCommand(Direction direction) {
     this.direction = direction;
 
-    addRequirements(Subsystems.pivot);
+    addRequirements(Subsystems.arm);
   }
 
   @Override
   public void initialize() {
     switch (direction) {
       case TowardsReef:
-        if (i < PivotConstants.PIVOT_ANGLES.size() - 1) {
+        if (i < ArmConstants.PIVOT_ANGLES.size() - 1) {
           i++;
         }
         break;
@@ -33,7 +33,7 @@ public class PivotMovementCommand extends Command {
         }
         break;
     }
-    Subsystems.pivot.setTargetAngle(PivotConstants.PIVOT_ANGLES.get(i));
+    Subsystems.arm.setTargetAngle(ArmConstants.PIVOT_ANGLES.get(i));
   };
 
   @Override

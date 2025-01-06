@@ -16,7 +16,7 @@ import frc.robot.LEDs.FlashSolidLEDCommand;
 import frc.robot.LEDs.RepeatedFlashLEDCommand;
 import frc.robot.auto.AutoProvider;
 import frc.robot.commands.ElevatorMovementCommand;
-import frc.robot.commands.PivotMovementCommand;
+import frc.robot.commands.ArmMovementCommand;
 import frc.robot.teleop.TeleopProvider;
 
 /**
@@ -76,8 +76,8 @@ public class RobotContainer {
     OI.pilot.povDown().onTrue(new ElevatorMovementCommand(ElevatorMovementCommand.Direction.Down));
 
     // Pivot movement
-    OI.pilot.povLeft().onTrue(new PivotMovementCommand(PivotMovementCommand.Direction.TowardsIntake));
-    OI.pilot.povRight().onTrue(new PivotMovementCommand(PivotMovementCommand.Direction.TowardsReef));
+    OI.pilot.povLeft().onTrue(new ArmMovementCommand(ArmMovementCommand.Direction.TowardsIntake));
+    OI.pilot.povRight().onTrue(new ArmMovementCommand(ArmMovementCommand.Direction.TowardsReef));
 
     // Drive bindings handled in teleop command
   }
