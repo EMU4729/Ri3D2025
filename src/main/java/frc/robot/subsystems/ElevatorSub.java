@@ -7,16 +7,8 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
@@ -133,12 +125,12 @@ public class ElevatorSub extends SubsystemBase {
     // + " " +
     // targetHeight);
 
-    System.out.println(controller.getP());
-    System.out.println(controller.getI());
-    System.out.println(controller.getD());
-    System.out.println(controller.getConstraints().maxAcceleration);
-    System.out.println(controller.getConstraints().maxVelocity);
-    System.out.println();
+    // System.out.println(controller.getP());
+    // System.out.println(controller.getI());
+    // System.out.println(controller.getD());
+    // System.out.println(controller.getConstraints().maxAcceleration);
+    // System.out.println(controller.getConstraints().maxVelocity);
+    // System.out.println();
 
     var out = controller.calculate(getHeight());
     out = MathUtil.clamp(out, -1, 1);
