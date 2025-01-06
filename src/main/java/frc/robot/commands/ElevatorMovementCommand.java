@@ -24,13 +24,11 @@ public class ElevatorMovementCommand extends Command {
     switch (direction) {
       case Up:
         if (i < ElevatorConstants.EXTENSION_DISTS.size() - 1) {
-          System.out.println("Up hit");
           i++;
         }
         break;
       case Down:
         if (i > 0) {
-          System.out.println("Down hit");
           i--;
         }
         break;
