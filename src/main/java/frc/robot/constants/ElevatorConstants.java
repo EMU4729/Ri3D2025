@@ -1,6 +1,8 @@
 package frc.robot.constants;
 
-import java.util.Arrays;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+
 import java.util.List;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -12,10 +14,17 @@ public class ElevatorConstants {
   protected ElevatorConstants() {
   }
 
+  /** https://www.revrobotics.com/rev-11-1271/ */
+  public static final int ENCODER_COUNTS_PER_REV = 8192;
+  public static final double ROLLER_DIAMETER_METERS = Inches.of(1).in(Meters);
+  public static final double ROLLER_CIRCUMFERENCE_METERS = Math.PI * ROLLER_DIAMETER_METERS;
+
   /** main elevator motor */
   public static final int MOTOR_ID = 2;
   /** encoder connected to measuring tape (genuis, btw) */
-  public static final EncoderSupplier ENCODER_ID = new EncoderSupplier(new int[] { 0, 1 }, 0.0002);
+  public static final EncoderSupplier ENCODER_ID = new EncoderSupplier(
+      new int[] { 0, 1 },
+      ROLLER_CIRCUMFERENCE_METERS / ENCODER_COUNTS_PER_REV);
 
   /** distance from ground to the bottom of the ramp at lowest extension */
   public static final double GROUND_TO_RAMP_METERS = 0;
@@ -40,6 +49,7 @@ public class ElevatorConstants {
       Units.inchesToMeters(31.875) - GROUND_TO_RAMP_METERS,
       Units.inchesToMeters(47.625) - GROUND_TO_RAMP_METERS);
 
+  // sim stuff
   public static final DCMotor GEARBOX = DCMotor.getFalcon500(1);
   public static final double ELEVATOR_KV = 1;
   public static final double ELEVATOR_KA = 1;
