@@ -9,7 +9,7 @@ import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.ElevatorSub;
 
 public class ActivateBase extends Command{
-    ActivateBase(){
+    public ActivateBase(){
         addRequirements(/*Subsystems.coralArm,*/ Subsystems.algaeArm, Subsystems.elevator);
     }
 

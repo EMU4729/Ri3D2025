@@ -10,6 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -90,6 +91,10 @@ public class AlgaeArmSub extends SubsystemBase {
 
   public void setTargetAngle(Angle angle) {
     motor.setControl(controller.withPosition(angle));
+  }
+
+  public void setTargetAngle(Angle angle, double maxSpeed){
+    motor.setControl(controller.withVelocity(maxSpeed).withPosition(angle));
   }
 
 }

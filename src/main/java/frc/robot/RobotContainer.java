@@ -15,6 +15,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.LEDs.FlashSolidLEDCommand;
 import frc.robot.LEDs.RepeatedFlashLEDCommand;
 import frc.robot.auto.AutoProvider;
+import frc.robot.commands.ActivateAlgaeL2;
+import frc.robot.commands.ActivateAlgaeL3;
+import frc.robot.commands.ActivateAlgaeUnload;
+import frc.robot.commands.ActivateCoralL1;
+import frc.robot.commands.ActivateCoralL2;
+import frc.robot.commands.ActivateCoralL3;
+import frc.robot.commands.ActivateCoralLoad;
 import frc.robot.teleop.TeleopProvider;
 
 /**
@@ -68,6 +75,15 @@ public class RobotContainer {
     OI.pilot.x().onTrue(new RepeatedFlashLEDCommand(
         (FlashSolidLEDCommand) (new FlashSolidLEDCommand(Color.kBlue, 200).withZone(new int[] { 0 })),
         5));
+
+    OI.copilot.povUp().whileTrue(new ActivateCoralL3());
+    OI.copilot.povRight().whileTrue(new ActivateCoralL2());
+    OI.copilot.povDown().whileTrue(new ActivateCoralL1());
+    OI.copilot.povLeft().whileTrue(new ActivateCoralLoad());
+    
+    OI.copilot.y().whileTrue(new ActivateAlgaeL3());
+    OI.copilot.b().whileTrue(new ActivateAlgaeL2());
+    OI.copilot.a().whileTrue(new ActivateAlgaeUnload());
 
     // Drive bindings handled in teleop command
   }

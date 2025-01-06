@@ -1,9 +1,12 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CoralArmConstants;
@@ -25,6 +28,7 @@ public class CoralArmSub extends SubsystemBase {
     return encoder.getDistance();
   }
 
+  public void setTargetAngle(Angle targetAngleDegrees) {setTargetAngle(targetAngleDegrees.in(Degrees));}
   public void setTargetAngle(double targetAngleDegrees) {
     controller.setSetpoint(targetAngleDegrees);
   }
