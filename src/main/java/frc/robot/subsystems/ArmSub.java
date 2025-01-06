@@ -25,6 +25,7 @@ public class ArmSub extends SubsystemBase {
   private final TalonFX motor = new TalonFX(ArmConstants.MOTOR_ID);
   private final PositionVoltage controller = new PositionVoltage(0).withSlot(0).withFeedForward(ArmConstants.PID_FF);
 
+  // sim stuff
   private final TalonFXSimState motorSim = motor.getSimState();
   private final SingleJointedArmSim armSim = new SingleJointedArmSim(
       ArmConstants.GEARBOX,
@@ -68,8 +69,6 @@ public class ArmSub extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     armSim.setInput(motor.getMotorVoltage().getValueAsDouble());
-    System.out.println(getCurrentAngle().in(Degrees));
-
     armSim.update(0.02);
 
     // note: we assume mechanism rotations and rotor rotations are equivalent.
