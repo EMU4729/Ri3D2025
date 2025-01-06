@@ -25,6 +25,7 @@ public class AutoProvider {
     chooser.addOption("test", new TestAuto());
     chooser.addOption("drive", new BasicDriveAuto());
     chooser.addOption("test2", new SequentialCommandGroup(new DriveAtAngle(0.4, Rotation2d.fromDegrees(45), 10000)));
+    chooser.addOption("left Algae Coral L3", new LSAlgeeCoralL3Auto());
     SmartDashboard.putData("Auto Chooser", chooser);
   }
 

@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Subsystems;
 import frc.robot.commands.ActivateAlgaeL2;
+import frc.robot.commands.ActivateAlgaeUnload;
 import frc.robot.commands.ActivateCoralL3;
 import frc.robot.commands.DriveAtAngle;
 import frc.robot.commands.DriveToPose;
@@ -27,7 +28,14 @@ public class LSAlgeeCoralL3Auto extends SequentialCommandGroup {
             new DriveAtAngle(0.4, new Rotation2d(240), 1000),
             new DriveAtAngle(-0.4, new Rotation2d(240), 1000),
             new ActivateCoralL3(true),
-            new TurnToAngle(Rotation2d.fromDegrees(240), Rotation2d.fromDegrees(2))
+            new TurnToAngle(Rotation2d.fromDegrees(60), Rotation2d.fromDegrees(2)),
+            new DriveAtAngle(0.4, new Rotation2d(60), 1000),
+            new DriveAtAngle(-0.4, new Rotation2d(60), 1000),
+            new TurnAndDriveToPose(new Translation2d(9, 9.5), 0.5, 0.2, Rotation2d.fromDegrees(2)),
+            new TurnAndDriveToPose(new Translation2d(9, 9), 0.5, 0.2, Rotation2d.fromDegrees(2)),
+            new ActivateAlgaeUnload()
+            
+
         );
     }
 }

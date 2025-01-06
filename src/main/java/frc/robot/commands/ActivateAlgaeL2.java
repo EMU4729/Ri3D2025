@@ -27,7 +27,7 @@ public class ActivateAlgaeL2 extends ActivateBase{
 
     @Override
     public void end(boolean interrupted) {
-        if(StayUnstowed){return;}
+        if(stayUnstowed){return;}
         Subsystems.algaeArm.setTargetAngle(AlgaeArmConstants.ANGLES.STOW);
         SequentialCommandGroup delayedRuns = new SequentialCommandGroup();
         delayedRuns.addCommands(
