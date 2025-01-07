@@ -51,18 +51,7 @@ public class PhotonBridge {
       camSim = new PhotonCameraSim(cam, camProps);
       camSim.enableProcessedStream(true);
 
-      // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
-      // pose,
-      // (Robot pose is considered the center of rotation at the floor level, or Z =
-      // 0)
-      Translation3d robotToCameraTrl = new Translation3d(0.1, 0, 0.5);
-      // and pitched 15 degrees up.
-      Rotation3d robotToCameraRot = new Rotation3d(0, Math.toRadians(-15), 0);
-      Transform3d robotToCamera = new Transform3d(robotToCameraTrl, robotToCameraRot);
-
-      // Add this camera to the vision system simulation with the given
-      // robot-to-camera transform.
-      visionSim.addCamera(camSim, robotToCamera);
+      visionSim.addCamera(camSim, VisionConstants.ROBOT_TO_CAMERA);
     }
   }
 

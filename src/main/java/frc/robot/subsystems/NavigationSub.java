@@ -1,10 +1,14 @@
 package frc.robot.subsystems;
 
+import org.ejml.dense.row.decomposition.eig.watched.WatchedDoubleStepQREigenvalue_DDRM;
+
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.simulation.ADIS16470_IMUSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
@@ -60,15 +64,25 @@ public class NavigationSub extends SubsystemBase {
 
   @Override
   public void periodic() {
-    DriveSub driveSub = Subsystems.drive;
-    // TODO Auto-generated method stub
-    super.periodic();
+    // incorporate vision estimation
+    photon.getEstimatedGlobalPose()
+        .ifPresent((result) -> {
+          final var visionPose = result.estimatedPose.toPose2d();
+          final var currentPose = getPose();
 
+          // we ignore any vision estimates that deviate from the pose estimator by more
+          // than 1m for stability
+          final var errorMeters = visionPose.getTranslation().getDistance(currentPose.getTranslation());
+          if (errorMeters < 1) {
+            poseEstimator.addVisionMeasurement(visionPose, result.timestampSeconds);
+          }
+        });
+
+    // incorporate encoder measurements
+    DifferentialDriveWheelPositions wheelPositions = Subsystems.drive.getWheelPositions();
     poseEstimator.update(
         Rotation2d.fromDegrees(imu.getAngle(IMUAxis.kZ)),
-        driveSub.getLeftDistance(), driveSub.getRightDistance());
-    // System.out.println(imu.getAngle() +" "+ driveSub.getLeftDistance() +" "+
-    // driveSub.getRightDistance() );
+        wheelPositions.leftMeters, wheelPositions.rightMeters);
 
     if (Robot.isReal()) {
       field.setRobotPose(getPose());
@@ -81,7 +95,7 @@ public class NavigationSub extends SubsystemBase {
 
     photon.simulationPeriodic(driveTrainSim.getPose());
     imuSim.setGyroAngleZ(driveTrainSim.getHeading().getDegrees());
-    field.setRobotPose(driveTrainSim.getPose());
+    field.setRobotPose(getPose());
 
     /*
      * Translation2d currentLoc = driveTrainSim.getPose().getTranslation();
