@@ -17,6 +17,9 @@ public class DriveToPose extends Command {
 
   private Translation2d translationError = new Translation2d(0, 0);
 
+  public DriveToPose(Pose2d targetPose, double targetSpeed, double tollerance) { 
+    this(targetPose.getTranslation(), targetSpeed, tollerance);
+  }
   public DriveToPose(Translation2d targetPose, double targetSpeed, double tollerance) {
     this.targetLoc = targetPose;
     this.targetSpeed = targetSpeed;

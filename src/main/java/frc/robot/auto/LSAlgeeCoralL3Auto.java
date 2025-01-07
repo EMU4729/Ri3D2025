@@ -11,31 +11,38 @@ import frc.robot.Subsystems;
 import frc.robot.commands.ActivateAlgaeL2;
 import frc.robot.commands.ActivateAlgaeUnload;
 import frc.robot.commands.ActivateCoralL3;
+import frc.robot.commands.ActivateStow;
 import frc.robot.commands.DriveAtAngle;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.TurnAndDriveToPose;
 import frc.robot.commands.TurnToAngle;
+import frc.robot.constants.AlgaeArmConstants;
+import frc.robot.constants.AutoConstants;
 
 public class LSAlgeeCoralL3Auto extends SequentialCommandGroup {
     public LSAlgeeCoralL3Auto(){
         addCommands(
-            new InstantCommand(()->Subsystems.nav.setCurrentPose(new Pose2d(7.945, 4.955, Rotation2d.fromDegrees(180)))),
+            new InstantCommand(()->Subsystems.nav.setCurrentPose(AutoConstants.AutoPoints.START_LEFT)),
             new ParallelCommandGroup(
-                new TurnAndDriveToPose(new Translation2d(5.51, 4.955), 0.5, 0.2, Rotation2d.fromDegrees(2)),
+                new TurnAndDriveToPose(new Translation2d(5.705, AutoConstants.AutoPoints.START_LEFT.getY()), 
+                                    0.5, 0.2, Rotation2d.fromDegrees(2)),
                 new ActivateAlgaeL2(true)
             ),
             new TurnToAngle(Rotation2d.fromDegrees(240), Rotation2d.fromDegrees(2)),
-            new DriveAtAngle(0.4, new Rotation2d(240), 1000),
+            new DriveToPose(AutoConstants.AutoPoints.REEF_FAR_LEFT, 0.5, 0.2),
             new DriveAtAngle(-0.4, new Rotation2d(240), 1000),
+            new InstantCommand(()->Subsystems.algaeArm.setTargetAngle(AlgaeArmConstants.ANGLES.STOW)),
             new ActivateCoralL3(true),
             new TurnToAngle(Rotation2d.fromDegrees(60), Rotation2d.fromDegrees(2)),
-            new DriveAtAngle(0.4, new Rotation2d(60), 1000),
+            new DriveAtAngle(0.4, new Rotation2d(60), 1500),
             new DriveAtAngle(-0.4, new Rotation2d(60), 1000),
-            new TurnAndDriveToPose(new Translation2d(9, 9.5), 0.5, 0.2, Rotation2d.fromDegrees(2)),
-            new TurnAndDriveToPose(new Translation2d(9, 9), 0.5, 0.2, Rotation2d.fromDegrees(2)),
-            new ActivateAlgaeUnload()
-            
-
+            new TurnAndDriveToPose(new Translation2d(AutoConstants.AutoPoints.PROCESSOR.getX()-0.5, 
+                                                     AutoConstants.AutoPoints.PROCESSOR.getY()), 
+                                                     0.5, 0.2, Rotation2d.fromDegrees(2)),
+            new TurnAndDriveToPose(AutoConstants.AutoPoints.PROCESSOR, 0.5, 0.2, Rotation2d.fromDegrees(2)),
+            new ActivateAlgaeUnload(),
+            new WaitCommand(2),
+            new ActivateStow()
         );
     }
 }
