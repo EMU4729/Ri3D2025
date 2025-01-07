@@ -1,5 +1,8 @@
 package frc.robot.utils;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
@@ -12,17 +15,16 @@ import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.constants.VisionConstants;
 
 public class PhotonBridge {
-  private final AprilTagFieldLayout fieldLayout;
   private final Transform3d robotToCam = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
   private final PhotonCamera cam = new PhotonCamera(VisionConstants.PHOTON_CAMERA_NAME);
   private final PhotonPoseEstimator poseEstimator;
@@ -33,7 +35,15 @@ public class PhotonBridge {
   private PhotonCameraSim camSim;
 
   public PhotonBridge() {
-    fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+    AprilTagFieldLayout fieldLayout;
+    try {
+      fieldLayout = new AprilTagFieldLayout(
+          Path.of(Filesystem.getDeployDirectory().getPath(), "2025-reefscape-apriltags.json"));
+    } catch (IOException e) {
+      System.out.println("PhotonBridge: Error: Could not load AprilTag field layout! Stack trace:");
+      e.printStackTrace();
+      fieldLayout = new AprilTagFieldLayout(List.of(), 0, 0);
+    }
     poseEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
     poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
