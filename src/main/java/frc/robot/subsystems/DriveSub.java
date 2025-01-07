@@ -71,10 +71,11 @@ public class DriveSub extends SubsystemBase {
     drive = new DifferentialDrive(leftMaster, rightMaster);
 
     SmartDashboard.putData(field);
-    SmartDashboard.putData("Drive Left Encoder", leftEncoder);
-    SmartDashboard.putData("Drive Right Encoder", rightEncoder);
-
+    SmartDashboard.putData("Steering PID", steerPID);
+    SmartDashboard.putData("Left Encoder", leftEncoder);
+    SmartDashboard.putData("Right Encoder", rightEncoder);
     addChild("Differential Drive", drive);
+
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
@@ -226,7 +227,7 @@ public class DriveSub extends SubsystemBase {
   }
 
   public double calcDrive(double distError) {
-    return -drivePID.calculate(distError);
+    return drivePID.calculate(distError);
   }
 
   public double calcSteer(Rotation2d angleError) {
