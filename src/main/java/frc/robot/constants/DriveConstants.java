@@ -1,6 +1,7 @@
 package frc.robot.constants;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -9,6 +10,7 @@ import frc.robot.utils.RangeMath.AxesFit;
 import frc.robot.utils.RangeMath.DriveBaseFit;
 import frc.robot.utils.motorsupplier.MotorSupplier;
 import frc.robot.utils.motorsupplier.TalonMotorSupplier;
+import frc.robot.utils.motorsupplier.VictorMotorSupplier;
 
 public class DriveConstants {
   protected DriveConstants() {
@@ -18,35 +20,34 @@ public class DriveConstants {
    * Information for left master drive [Port,controller type,
    * {invert,brake,connectionSaftey}]
    */
-  public static final MotorSupplier<WPI_TalonSRX> MOTOR_ID_LM = new TalonMotorSupplier(1)
+  public static final MotorSupplier<WPI_VictorSPX> MOTOR_ID_LM = new VictorMotorSupplier(1)
       .withSafety().withInvert();
 
   /** Drive left encoder builder */
-  public static final EncoderSupplier ENCODER_ID_L = new EncoderSupplier(new int[] { 19, 20 }, 60.078 / 256. / 1000);
+  public static final EncoderSupplier ENCODER_ID_L = new EncoderSupplier(new int[] { 0, 1 }, 60.078 / 256. / 1000);
 
   /**
    * Information for right master drive [Port,controller type,
    * {invert,brake,connectionSaftey}]
    */
-  public static final MotorSupplier<WPI_TalonSRX> MOTOR_ID_RM = new TalonMotorSupplier(3)
+  public static final MotorSupplier<WPI_VictorSPX> MOTOR_ID_RM = new VictorMotorSupplier(3)
       .withSafety();
 
   /** Drive left encoder builder */
-  public static final EncoderSupplier ENCODER_ID_R = new EncoderSupplier(new int[] { 14, 15 }, 59.883 / 256. / 1000)
+  public static final EncoderSupplier ENCODER_ID_R = new EncoderSupplier(new int[] { 2, 3 }, 59.883 / 256. / 1000)
       .withInvert();
 
   /**
    * Information for left slave drive [Port,controller type,
    * {invert,brake,connectionSaftey}]
    */
-  public static final MotorSupplier<WPI_TalonSRX> MOTOR_ID_LS = new TalonMotorSupplier(2)
-      .withSafety().withInvert();
+  public static final MotorSupplier<WPI_VictorSPX> MOTOR_ID_LS = new VictorMotorSupplier(2)
+      .withInvert();
   /**
    * Information for right slave drive [Port,controller type,
    * {invert,brake,connectionSaftey}]
    */
-  public static final MotorSupplier<WPI_TalonSRX> MOTOR_ID_RS = new TalonMotorSupplier(4)
-      .withSafety();
+  public static final MotorSupplier<WPI_VictorSPX> MOTOR_ID_RS = new VictorMotorSupplier(4);
 
   /* Whether to clamp drive/turn before setting the motors */
   public static final boolean USE_CLAMPING = true;
@@ -101,7 +102,7 @@ public class DriveConstants {
   public static final DriveBaseFit PILOT_SETTINGS = new DriveBaseFit(
       new AxesFit().withOutputMinMax(MIN_THROT, 0.8).withDeadBand(0.1).withPow(2).withBooster(1).withLimiter(0.5),
       new AxesFit().withOutputMinMax(MIN_TURN, 0.7).withDeadBand(0.1).withPow(3),
-      0.4).invertX().invertYaw();
+      0.5).invertX().invertYaw();
 
   /**
    * settings for robot drive in demo mode
