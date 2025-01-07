@@ -54,8 +54,8 @@ public class DriveSub extends SubsystemBase {
 
   private final double randomBiasSim = (Math.random() - 0.5) / 6;
 
-  private final PIDController steerPID = new PIDController(0.025, 0.0001, 0.004);
-  private final PIDController drivePID = new PIDController(0.5, 0.01, 0.01);
+  private final PIDController steerPID = new PIDController(0.025, 0.001, 0.004);
+  private final PIDController drivePID = new PIDController(0.5, 0.02, 0.01);
 
   private double driveThrottle;
   private double turnThrottle;

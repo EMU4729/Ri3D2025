@@ -16,6 +16,7 @@ public class ActivateCoralLoad extends ActivateBase{
 
     @Override
     public void initialize() {
+        System.out.println("Moving to load coral");
         super.initialize();
         Subsystems.elevator.setTargetHeight(ElevatorConstants.HEIGHTS.CORAL_LOAD);
         Subsystems.coralArm.setTargetAngle(CoralArmConstants.ANGLES.LOAD.in(Degrees));

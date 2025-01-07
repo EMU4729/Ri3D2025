@@ -3,22 +3,30 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems;
+import frc.robot.constants.AutoConstants;
 import frc.robot.subsystems.DriveSub;
 
 public class TurnToAngle extends Command {
   private int finished = 0;
-  private final Rotation2d angle;
+  private Rotation2d angle;
+  private final boolean byAlliance;
   private final Rotation2d tollerance;
 
   public TurnToAngle(Rotation2d angle, Rotation2d tollerance) {
+    this(angle, tollerance, true);
+  }
+  public TurnToAngle(Rotation2d angle, Rotation2d tollerance, boolean byAlliance) {
     this.angle = angle;
     this.tollerance = tollerance;
-
+    this.byAlliance = byAlliance;
+    
     addRequirements(Subsystems.drive);
   }
-
+  
   @Override
   public void initialize() {
+    if(byAlliance){angle = AutoConstants.AutoPoints.byAlliance(angle);}    
+    System.out.println("Turning to Angle "+angle.getDegrees()+"deg");
     super.initialize();
   }
 
@@ -43,6 +51,7 @@ public class TurnToAngle extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    System.out.println("Stopping");
     Subsystems.drive.off();
     super.end(interrupted);
   }

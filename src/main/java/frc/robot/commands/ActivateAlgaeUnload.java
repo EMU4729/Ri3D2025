@@ -16,6 +16,7 @@ public class ActivateAlgaeUnload extends ActivateBase{
 
     @Override
     public void initialize() {
+        System.out.println("Moving to unload Algee");
         super.initialize();
         Subsystems.elevator.setTargetHeight(ElevatorConstants.HEIGHTS.ALGAE_PROCESSOR);
         Subsystems.algaeArm.setTargetAngle(AlgaeArmConstants.ANGLES.UNLOAD);

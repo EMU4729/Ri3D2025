@@ -31,6 +31,8 @@ public class ActivateBase extends Command{
     @Override
     public void end(boolean interrupted) {
         if(stayUnstowed){return;}
+        System.out.println("Moving to stow");
+
         Subsystems.coralArm.setTargetAngle(CoralArmConstants.ANGLES.STOW);
         Subsystems.algaeArm.setTargetAngle(AlgaeArmConstants.ANGLES.STOW);
         Subsystems.elevator.setTargetHeight(ElevatorConstants.HEIGHTS.STOW);

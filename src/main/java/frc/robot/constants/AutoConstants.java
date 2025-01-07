@@ -49,7 +49,7 @@ public class AutoConstants {
     public static final Pose2d START_RIGHT = 
             new Pose2d( 7.557, 1.915, Rotation2d.k180deg);
 
-    private static final Translation2d REEF_BOT_OFFSET = new Translation2d(1.6637 + ROBOT_SIZE_BUMPERS.getX()/2, 0);
+    private static final Translation2d REEF_BOT_OFFSET = new Translation2d(0.83185 + ROBOT_SIZE_BUMPERS.getX()/2, 0);
     private static final int[] REEF_ANGLES = {300, 240, 0, 180, 60, 120};
     public static final Pose2d REEF_NEAR_LEFT =
             new Pose2d(REEF_LOC.minus(REEF_BOT_OFFSET.rotateBy(Rotation2d.fromDegrees(REEF_ANGLES[0]))), Rotation2d.fromDegrees(REEF_ANGLES[0]));
@@ -61,10 +61,10 @@ public class AutoConstants {
             new Pose2d(REEF_LOC.minus(REEF_BOT_OFFSET.rotateBy(Rotation2d.fromDegrees(REEF_ANGLES[3]))), Rotation2d.fromDegrees(REEF_ANGLES[3]));
     public static final Pose2d REEF_NEAR_RIGHT =
             new Pose2d(REEF_LOC.minus(REEF_BOT_OFFSET.rotateBy(Rotation2d.fromDegrees(REEF_ANGLES[4]))), Rotation2d.fromDegrees(REEF_ANGLES[4]));
-    public static final Pose2d REEF_FA__RIGHT =
+    public static final Pose2d REEF_FAR_RIGHT =
             new Pose2d(REEF_LOC.minus(REEF_BOT_OFFSET.rotateBy(Rotation2d.fromDegrees(REEF_ANGLES[5]))), Rotation2d.fromDegrees(REEF_ANGLES[5]));
             
-    public static final Translation2d PROCESSOR = new Translation2d(5.987542, 0);
+    public static final Translation2d PROCESSOR = new Translation2d(5.987542, ROBOT_SIZE_BUMPERS.getY()/2);
     
     public static final Translation2d ALGAE_LEFT = new Translation2d(1.2192, FIELD_CENTRE.getY() + 1.8288);
     public static final Translation2d ALGAE_CENTRE = new Translation2d(1.2192, FIELD_CENTRE.getY());
@@ -80,16 +80,20 @@ public class AutoConstants {
     
     //----------------------------------------------------------------
 
-    public Pose2d byAlliance(Pose2d pose){
-      if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get()  == Alliance.Blue){return pose;}
+    public static Pose2d byAlliance(Pose2d pose){
+      if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue){return pose;}
       Translation2d newLoc = pose.getTranslation().rotateAround(FIELD_CENTRE, Rotation2d.k180deg);
       Rotation2d newRot = pose.getRotation().rotateBy(Rotation2d.k180deg);
       
       return new Pose2d(newLoc, newRot);
     }
-    public Translation2d byAlliance(Translation2d loc){
-      if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get()  == Alliance.Blue){return loc;}
+    public static Translation2d byAlliance(Translation2d loc){
+      if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue){return loc;}
       return loc.rotateAround(FIELD_CENTRE, Rotation2d.k180deg);
+    }
+    public static Rotation2d byAlliance(Rotation2d rot){
+      if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue){return rot;}
+      return rot.rotateBy(Rotation2d.k180deg);
     }
   } 
 }

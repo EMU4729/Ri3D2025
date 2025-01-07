@@ -19,6 +19,7 @@ public class ActivateAlgaeL3 extends ActivateBase{
 
     @Override
     public void initialize() {
+        System.out.println("Moving to collect Algee at L3");
         super.initialize();
         Subsystems.elevator.setTargetHeight(ElevatorConstants.HEIGHTS.ALGAE_L3);
         Subsystems.algaeArm.setTargetAngle(AlgaeArmConstants.ANGLES.LOAD_START);
@@ -28,6 +29,8 @@ public class ActivateAlgaeL3 extends ActivateBase{
     @Override
     public void end(boolean interrupted) {
         if(stayUnstowed){return;}
+        System.out.println("Moving to stow");
+
         Subsystems.algaeArm.setTargetAngle(AlgaeArmConstants.ANGLES.STOW);
         SequentialCommandGroup delayedRuns = new SequentialCommandGroup();
         delayedRuns.addCommands(
