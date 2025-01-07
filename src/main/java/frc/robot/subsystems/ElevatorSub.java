@@ -21,15 +21,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ElevatorConstants;
 
 public class ElevatorSub extends SubsystemBase {
-  private final Encoder encoder = ElevatorConstants.ENCODER_ID.get();
-  private final EncoderSim encoderSim = new EncoderSim(encoder);
-
-  private final ProfiledPIDController controller = new ProfiledPIDController(ElevatorConstants.UPPER_P,
-      ElevatorConstants.UPPER_I, ElevatorConstants.UPPER_D, ElevatorConstants.MOTION_CONSTRAINTS);
-
   private final TalonFX motor = new TalonFX(ElevatorConstants.MOTOR_ID);
-  private final TalonFXSimState motorSim = motor.getSimState();
+  private final Encoder encoder = ElevatorConstants.ENCODER_ID.get();
+  private final ProfiledPIDController controller = new ProfiledPIDController(ElevatorConstants.PID_P,
+      ElevatorConstants.PID_I, ElevatorConstants.PID_D, ElevatorConstants.MOTION_CONSTRAINTS);
 
+  // sim stuff
+  private final TalonFXSimState motorSim = motor.getSimState();
+  private final EncoderSim encoderSim = new EncoderSim(encoder);
   private final ElevatorSim elevatorSim = new ElevatorSim(
       ElevatorConstants.GEARBOX,
       ElevatorConstants.ELEVATOR_GEARING_RATIO,
@@ -55,6 +54,7 @@ public class ElevatorSub extends SubsystemBase {
     motor.getConfigurator().apply(motorConfig);
 
     SmartDashboard.putData("Elevator Sim", mech2d);
+    SmartDashboard.putData("Elevator PID", controller);
   }
 
   public double getHeight() {
@@ -107,7 +107,6 @@ public class ElevatorSub extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //System.out.println(controller.getGoal().position);
     elevatorMech2d.setLength(getHeight());
 
     if (!DriverStation.isEnabled()) {
@@ -125,6 +124,13 @@ public class ElevatorSub extends SubsystemBase {
     // (double) (Math.round(liftMotor.getMotorVoltage().getValue() * 10000)) / 10000
     // + " " +
     // targetHeight);
+
+    // System.out.println(controller.getP());
+    // System.out.println(controller.getI());
+    // System.out.println(controller.getD());
+    // System.out.println(controller.getConstraints().maxAcceleration);
+    // System.out.println(controller.getConstraints().maxVelocity);
+    // System.out.println();
 
     var out = controller.calculate(getHeight());
     out = MathUtil.clamp(out, -1, 1);
