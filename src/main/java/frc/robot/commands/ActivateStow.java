@@ -7,30 +7,20 @@ import frc.robot.Subsystems;
 import frc.robot.constants.AlgaeArmConstants;
 import frc.robot.constants.CoralArmConstants;
 import frc.robot.constants.ElevatorConstants;
-import frc.robot.subsystems.ElevatorSub;
 
-public class ActivateBase extends Command{
-    boolean stayUnstowed;
+public class ActivateStow extends Command{
 
-    public ActivateBase(){this(false);}
-    public ActivateBase(Boolean stayUnstowed){
-        this.stayUnstowed = stayUnstowed;
-        addRequirements(/*Subsystems.coralArm,*/ Subsystems.algaeArm, Subsystems.elevator);
-    }
-
-    @Override
-    public void initialize() {
-        super.initialize();
+    public ActivateStow(){
+        addRequirements(Subsystems.coralArm, Subsystems.algaeArm, Subsystems.elevator);
     }
 
     @Override
     public boolean isFinished() {
-        return stayUnstowed;
+        return true;
     }
 
     @Override
     public void end(boolean interrupted) {
-        if(stayUnstowed){return;}
         Subsystems.coralArm.setTargetAngle(CoralArmConstants.ANGLES.STOW);
         Subsystems.algaeArm.setTargetAngle(AlgaeArmConstants.ANGLES.STOW);
         Subsystems.elevator.setTargetHeight(ElevatorConstants.HEIGHTS.STOW);
