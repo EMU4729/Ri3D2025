@@ -9,6 +9,6 @@ public class AlgaeGrabberConstants {
   protected AlgaeGrabberConstants() {
   }
 
-  public static final MotorSupplier<WPI_TalonSRX> UPPER_MOTOR_ID = new TalonMotorSupplier(0);
-  public static final MotorSupplier<WPI_TalonSRX> LOWER_MOTOR_ID = new TalonMotorSupplier(0).withInvert();
+  public static final MotorSupplier<WPI_TalonSRX> UPPER_MOTOR_ID = new TalonMotorSupplier(5);
+  public static final MotorSupplier<WPI_TalonSRX> LOWER_MOTOR_ID = new TalonMotorSupplier(6).withInvert();
 }

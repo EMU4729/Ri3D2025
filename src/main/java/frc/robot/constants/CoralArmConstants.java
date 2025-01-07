@@ -20,8 +20,8 @@ public class CoralArmConstants {
   }
 
   // note: none of these values are real
-  public static final MotorSupplier<WPI_TalonSRX> MOTOR_ID = new TalonMotorSupplier(6).withBrake();
-  public static final EncoderSupplier ENCODER_ID = new EncoderSupplier(new int[] { 2, 3 }, 0.002);
+  public static final MotorSupplier<WPI_TalonSRX> MOTOR_ID = new TalonMotorSupplier(8).withBrake();
+  public static final EncoderSupplier ENCODER_ID = new EncoderSupplier(new int[] { 4, 5 }, 0.002);
   //public static final double[] ANGLES_DEGREES = new double[] { 0, 35, 180 };
 
   public static final double PID_P = 2;

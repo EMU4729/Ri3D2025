@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -29,11 +30,11 @@ import frc.robot.constants.SimConstants;
  * Handles all drive functionality.
  */
 public class DriveSub extends SubsystemBase {
-  private final WPI_TalonSRX leftMaster = DriveConstants.MOTOR_ID_LM.get();
-  private final WPI_TalonSRX leftSlave = DriveConstants.MOTOR_ID_LS.get();
+  private final WPI_VictorSPX leftMaster = DriveConstants.MOTOR_ID_LM.get();
+  private final WPI_VictorSPX leftSlave = DriveConstants.MOTOR_ID_LS.get();
 
-  private final WPI_TalonSRX rightMaster = DriveConstants.MOTOR_ID_RM.get();
-  private final WPI_TalonSRX rightSlave = DriveConstants.MOTOR_ID_RS.get();
+  private final WPI_VictorSPX rightMaster = DriveConstants.MOTOR_ID_RM.get();
+  private final WPI_VictorSPX rightSlave = DriveConstants.MOTOR_ID_RS.get();
 
   private final Encoder leftEncoder = DriveConstants.ENCODER_ID_L.get();
   private final Encoder rightEncoder = DriveConstants.ENCODER_ID_R.get();
@@ -70,6 +71,8 @@ public class DriveSub extends SubsystemBase {
     drive = new DifferentialDrive(leftMaster, rightMaster);
 
     SmartDashboard.putData(field);
+    SmartDashboard.putData("Drive Left Encoder", leftEncoder);
+    SmartDashboard.putData("Drive Right Encoder", rightEncoder);
 
     addChild("Differential Drive", drive);
   }
