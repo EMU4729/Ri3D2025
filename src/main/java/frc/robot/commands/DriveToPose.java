@@ -12,25 +12,29 @@ import frc.robot.subsystems.NavigationSub;
 
 public class DriveToPose extends Command {
 
-  private Translation2d targetLoc;
+  private Translation2d targetLocByTeam;
+  private Translation2d targetLocOrig;
   private final double targetSpeed;
+  private final double maxTurn;
   private final double tollerance;
   private final boolean byAlliance;
+  private int finished = 0;
 
   private Translation2d translationError = new Translation2d(0, 0);
 
-  public DriveToPose(Pose2d targetPose, double targetSpeed, double tollerance, boolean byAlliance) { 
-    this(targetPose.getTranslation(), targetSpeed, tollerance, byAlliance);
+  public DriveToPose(Pose2d targetPose, double targetSpeed, double  maxTurn, double tollerance, boolean byAlliance) { 
+    this(targetPose.getTranslation(), targetSpeed, maxTurn, tollerance, byAlliance);
   }
-  public DriveToPose(Pose2d targetPose, double targetSpeed, double tollerance) { 
-    this(targetPose.getTranslation(), targetSpeed, tollerance);
+  public DriveToPose(Pose2d targetPose, double targetSpeed, double  maxTurn, double tollerance) { 
+    this(targetPose.getTranslation(), targetSpeed, maxTurn, tollerance);
   }
-  public DriveToPose(Translation2d targetLoc, double targetSpeed, double tollerance) {
-    this(targetLoc, targetSpeed, tollerance, true);
+  public DriveToPose(Translation2d targetLoc, double targetSpeed, double  maxTurn, double tollerance) {
+    this(targetLoc, targetSpeed, maxTurn, tollerance, true);
   }
-  public DriveToPose(Translation2d targetLoc, double targetSpeed, double tollerance, boolean byAlliance) {
-    this.targetLoc = targetLoc;
+  public DriveToPose(Translation2d targetLoc, double targetSpeed, double  maxTurn, double tollerance, boolean byAlliance) {
+    this.targetLocOrig = targetLoc;
     this.targetSpeed = targetSpeed;
+    this.maxTurn = maxTurn;
     this.tollerance = tollerance;
     this.byAlliance = byAlliance;
 
@@ -40,8 +44,10 @@ public class DriveToPose extends Command {
   
   @Override
   public void initialize() {
-    if(byAlliance){targetLoc = AutoConstants.AutoPoints.byAlliance(targetLoc);}
-    System.out.println("Driving toward location "+targetLoc);
+    if(byAlliance){targetLocByTeam = AutoConstants.AutoPoints.byAlliance(targetLocOrig);}
+    else {targetLocByTeam = targetLocOrig;}
+    System.out.println("Driving toward location "+targetLocByTeam);
+    Subsystems.drive.clearPIDError();
     translationError = new Translation2d(0, 0);
     super.initialize();
   }
@@ -54,24 +60,31 @@ public class DriveToPose extends Command {
 
     // robot relative
     Pose2d robotPose = nav.getPose();
-    translationError = targetLoc
+    translationError = targetLocByTeam
         .minus(robotPose.getTranslation())
         .rotateBy(robotPose.getRotation().times(-1));
     // translationError = new Translation2d(translationError.getX(),
     // -translationError.getY());
-    Rotation2d angleError = translationError.getAngle();
+    Rotation2d angleError = new Translation2d(Math.max(translationError.getX(), 1), 
+                                              Math.min(translationError.getY(), 1)).getAngle();
     double distError = translationError.getNorm();
 
-    double steer = drive.calcSteer(angleError);
+    double steer = MathUtil.clamp(drive.calcSteer(angleError), -maxTurn, maxTurn);
     double speed = MathUtil.clamp(drive.calcDrive(distError), -targetSpeed, targetSpeed);
 
     // System.out.println(speed + " " + steer);
     drive.arcade(speed, steer);
+
+    if(translationError.getX() < tollerance){
+      finished++;
+    } else {
+      finished = 0;
+    }
   }
 
   @Override
   public boolean isFinished() {
-    return translationError.getX() < tollerance;
+    return finished > 20;
   }
 
   @Override

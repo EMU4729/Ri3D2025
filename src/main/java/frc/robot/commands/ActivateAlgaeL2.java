@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Subsystems;
 import frc.robot.constants.AlgaeArmConstants;
-import frc.robot.constants.CoralArmConstants;
 import frc.robot.constants.ElevatorConstants;
 
 public class ActivateAlgaeL2 extends ActivateBase{
@@ -23,12 +22,14 @@ public class ActivateAlgaeL2 extends ActivateBase{
         super.initialize();
         Subsystems.elevator.setTargetHeight(ElevatorConstants.HEIGHTS.ALGAE_L2);
         Subsystems.algaeArm.setTargetAngle(AlgaeArmConstants.ANGLES.LOAD_START);
-        //start wheels
+        Subsystems.algaeGrabber.loadfast();
+        
     }
 
     @Override
     public void end(boolean interrupted) {
         if(stayUnstowed){return;}
+        Subsystems.algaeGrabber.stop();
         System.out.println("Moving to stow");
         
         Subsystems.algaeArm.setTargetAngle(AlgaeArmConstants.ANGLES.STOW);

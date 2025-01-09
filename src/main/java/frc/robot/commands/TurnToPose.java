@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -11,15 +12,18 @@ import frc.robot.subsystems.NavigationSub;
 
 public class TurnToPose extends Command {
   private int finished = 0;
-  private Translation2d targetLoc;
+  private double maxTurn;
+  private Translation2d targetLocByTeam;
+  private Translation2d targetLocOrig;
   private final boolean byAlliance;
   private final Rotation2d tollerance;
 
-  public TurnToPose(Translation2d targetLoc, Rotation2d tollerance) {
-    this(targetLoc, tollerance, true);
+  public TurnToPose(Translation2d targetLoc, double maxTurn, Rotation2d tollerance) {
+    this(targetLoc, maxTurn, tollerance, true);
   }
-  public TurnToPose(Translation2d targetLoc, Rotation2d tollerance, boolean byAlliance) {
-    this.targetLoc = targetLoc;    
+  public TurnToPose(Translation2d targetLoc, double maxTurn, Rotation2d tollerance, boolean byAlliance) {
+    this.targetLocOrig = targetLoc; 
+    this.maxTurn = maxTurn;   
     this.tollerance = tollerance;
     this.byAlliance = byAlliance;
 
@@ -28,8 +32,10 @@ public class TurnToPose extends Command {
   
   @Override
   public void initialize() {
-    if(byAlliance){targetLoc = AutoConstants.AutoPoints.byAlliance(targetLoc);}    
-    System.out.println("Turning to aim at Pose "+targetLoc);
+    if(byAlliance){targetLocByTeam = AutoConstants.AutoPoints.byAlliance(targetLocOrig);}
+    else {targetLocByTeam = targetLocOrig;}
+    System.out.println("Turning to aim at Pose "+targetLocByTeam);
+    Subsystems.drive.clearPIDError();
     super.initialize();
   }
 
@@ -41,12 +47,12 @@ public class TurnToPose extends Command {
 
     // robot relative
     Pose2d robotPose = nav.getPose();
-    Translation2d translationError = targetLoc
+    Translation2d translationError = targetLocByTeam
         .minus(robotPose.getTranslation())
         .rotateBy(robotPose.getRotation().times(-1));
 
     Rotation2d angleError = translationError.getAngle();
-    drive.arcade(0, drive.calcSteer(angleError));
+    drive.arcade(0, MathUtil.clamp(drive.calcSteer(angleError), -maxTurn, maxTurn));
 
     if (Math.abs(angleError.getRadians()) < tollerance.getRadians()) {
       finished++;

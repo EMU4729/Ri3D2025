@@ -19,6 +19,6 @@ public class ActivateCoralL3 extends ActivateBase{
         System.out.println("Moving to unload coral at L1");
         super.initialize();
         Subsystems.elevator.setTargetHeight(ElevatorConstants.HEIGHTS.CORAL_L3);
-        Subsystems.coralArm.setTargetAngle(CoralArmConstants.ANGLES.UNLOAD.in(Degrees));
+        Subsystems.coralArm.setTargetAngle(CoralArmConstants.ANGLES.UNLOAD);
     }
 }

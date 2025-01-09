@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Subsystems;
+import frc.robot.commands.TurnToPose;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.SimConstants;
 
@@ -54,8 +55,8 @@ public class DriveSub extends SubsystemBase {
 
   private final double randomBiasSim = (Math.random() - 0.5) / 6;
 
-  private final PIDController steerPID = new PIDController(0.025, 0.001, 0.004);
-  private final PIDController drivePID = new PIDController(0.5, 0.02, 0.01);
+  private final PIDController steerPID = new PIDController(0.02, 0.015, 0.005);
+  private final PIDController drivePID = new PIDController(1.2, 0.15, 0.05);
 
   private double driveThrottle;
   private double turnThrottle;
@@ -68,10 +69,14 @@ public class DriveSub extends SubsystemBase {
     leftSlave.follow(leftMaster);
     rightSlave.follow(rightMaster);
 
+    steerPID.setIZone(30);
+    drivePID.setIZone(0.5);
+
     drive = new DifferentialDrive(leftMaster, rightMaster);
 
     SmartDashboard.putData(field);
     SmartDashboard.putData("Steering PID", steerPID);
+    SmartDashboard.putData("Drive Dist PID", drivePID);
     SmartDashboard.putData("Left Encoder", leftEncoder);
     SmartDashboard.putData("Right Encoder", rightEncoder);
     addChild("Differential Drive", drive);
@@ -92,6 +97,11 @@ public class DriveSub extends SubsystemBase {
 
   public double getRightDistance() {
     return rightEncoder.getDistance();
+  }
+
+  public void clearPIDError(){
+    steerPID.reset();
+    drivePID.reset();
   }
 
   /**

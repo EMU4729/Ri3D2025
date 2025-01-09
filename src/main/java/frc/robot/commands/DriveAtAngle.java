@@ -4,6 +4,7 @@ import java.time.Instant;
 
 import com.fasterxml.jackson.databind.introspect.AnnotatedField;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems;
@@ -14,24 +15,29 @@ public class DriveAtAngle extends Command {
   private Instant end;
 
   private final double speed;
-  private Rotation2d angle;
+  private final double maxTurn;
+  private Rotation2d angleOrig;
+  private Rotation2d angleByTeam;
   private final int runForMS;
   private final boolean byAlliance;
   
-  public DriveAtAngle(double speed, Rotation2d angle, int runForMS) {
-    this(speed, angle, runForMS, true);
+  public DriveAtAngle(double speed, double maxTurn, Rotation2d angle, int runForMS) {
+    this(speed, maxTurn, angle, runForMS, true);
   }
-  public DriveAtAngle(double speed, Rotation2d angle, int runForMS, boolean byAlliance) {
+  public DriveAtAngle(double speed, double maxTurn, Rotation2d angle, int runForMS, boolean byAlliance) {
     this.speed = speed;
-    this.angle = angle;
+    this.maxTurn = maxTurn;
+    this.angleByTeam = angle;
     this.runForMS = runForMS;
     this.byAlliance = byAlliance;
   }
   
   @Override
   public void initialize() {
-    if(byAlliance){angle = AutoConstants.AutoPoints.byAlliance(angle);}
-    System.out.println("Driving at Angle "+angle.getDegrees()+"deg, for "+runForMS+"ms");
+    if(byAlliance){angleByTeam = AutoConstants.AutoPoints.byAlliance(angleOrig);}
+    else {angleByTeam = angleOrig;}
+    System.out.println("Driving at Angle "+angleByTeam.getDegrees()+"deg, for "+runForMS+"ms");
+    Subsystems.drive.clearPIDError();
     super.initialize();
     end = Instant.now().plusMillis(runForMS);
   }
@@ -40,9 +46,9 @@ public class DriveAtAngle extends Command {
   public void execute() {
     super.execute();
     DriveSub drive = Subsystems.drive;
-    Rotation2d angleError = drive.calcAngleError(angle);
+    Rotation2d angleError = drive.calcAngleError(angleByTeam);
     double tmpSpeed = Math.abs(angleError.getDegrees()) > 10 ? 0 : speed;
-    double tmpSteer = drive.calcSteer(angleError);
+    double tmpSteer =  MathUtil.clamp(drive.calcSteer(angleError), -maxTurn, maxTurn);
     drive.arcade(tmpSpeed, tmpSteer);
   }
 

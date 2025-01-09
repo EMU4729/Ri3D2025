@@ -1,5 +1,8 @@
 package frc.robot.commands;
 
+import javax.crypto.Mac;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems;
@@ -8,15 +11,18 @@ import frc.robot.subsystems.DriveSub;
 
 public class TurnToAngle extends Command {
   private int finished = 0;
-  private Rotation2d angle;
+  private final double maxTurn;
+  private Rotation2d angleOrig;
+  private Rotation2d angleTeamRel;
   private final boolean byAlliance;
   private final Rotation2d tollerance;
 
-  public TurnToAngle(Rotation2d angle, Rotation2d tollerance) {
-    this(angle, tollerance, true);
+  public TurnToAngle(Rotation2d angle, double maxTurn, Rotation2d tollerance) {
+    this(angle, maxTurn, tollerance, true);
   }
-  public TurnToAngle(Rotation2d angle, Rotation2d tollerance, boolean byAlliance) {
-    this.angle = angle;
+  public TurnToAngle(Rotation2d angle, double maxTurn, Rotation2d tollerance, boolean byAlliance) {
+    this.angleOrig = angle;
+    this.maxTurn = maxTurn;
     this.tollerance = tollerance;
     this.byAlliance = byAlliance;
     
@@ -25,8 +31,10 @@ public class TurnToAngle extends Command {
   
   @Override
   public void initialize() {
-    if(byAlliance){angle = AutoConstants.AutoPoints.byAlliance(angle);}    
-    System.out.println("Turning to Angle "+angle.getDegrees()+"deg");
+    if(byAlliance){angleTeamRel = AutoConstants.AutoPoints.byAlliance(angleOrig);}
+    else {angleTeamRel = angleOrig;}
+    System.out.println("Turning to Angle "+angleTeamRel.getDegrees()+"deg");
+    Subsystems.drive.clearPIDError();
     super.initialize();
   }
 
@@ -34,8 +42,8 @@ public class TurnToAngle extends Command {
   public void execute() {
     super.execute();
     DriveSub drive = Subsystems.drive;
-    Rotation2d angleError = drive.calcAngleError(angle);
-    drive.arcade(0, drive.calcSteer(angleError));
+    Rotation2d angleError = drive.calcAngleError(angleTeamRel);
+    drive.arcade(0, MathUtil.clamp(drive.calcSteer(angleError), -maxTurn, maxTurn));
 
     if (Math.abs(angleError.getRadians()) < tollerance.getRadians()) {
       finished++;
@@ -46,7 +54,7 @@ public class TurnToAngle extends Command {
 
   @Override
   public boolean isFinished() {
-    return finished >= 10;
+    return finished >= 20;
   }
 
   @Override

@@ -23,8 +23,15 @@ public class AutoProvider {
     // chooser.setDefaultOption("disabled", new InstantCommand(() -> {
     // }, Subsystems.swerveDrive));
     chooser.addOption("test", new TestAuto());
-    chooser.addOption("drive", new BasicDriveAuto());
-    chooser.addOption("test2", new SequentialCommandGroup(new DriveAtAngle(0.4, Rotation2d.fromDegrees(45), 10000)));
+    chooser.addOption("box", new DriveBox( 1));
+    chooser.addOption("drive0.3", new BasicDriveAuto(0.3));
+    chooser.addOption("drive1", new BasicDriveAuto(1));
+    chooser.addOption("drive2", new BasicDriveAuto(2));
+    chooser.addOption("drive5", new BasicDriveAuto(5));
+    chooser.addOption("turn180", new BasicTurnAuto(Rotation2d.k180deg));
+    chooser.addOption("turn90ccw", new BasicTurnAuto(Rotation2d.kCCW_90deg));
+    chooser.addOption("turn90cw", new BasicTurnAuto(Rotation2d.kCW_90deg));
+    chooser.addOption("test2", new SequentialCommandGroup(new DriveAtAngle(0.4, 0.5, Rotation2d.fromDegrees(45), 10000)));
     chooser.addOption("left Algae Coral L3", new LSAlgeeCoralL3Auto());
     chooser.addOption("right Algae Coral L3", new RSAlgeeCoralL3Auto());
     SmartDashboard.putData("Auto Chooser", chooser);

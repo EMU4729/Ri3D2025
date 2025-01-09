@@ -1,6 +1,10 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
@@ -21,10 +25,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ElevatorConstants;
 
 public class ElevatorSub extends SubsystemBase {
-  private final TalonFX motor = new TalonFX(ElevatorConstants.MOTOR_ID);
+  private final TalonFX motor = new TalonFX(5);//ElevatorConstants.MOTOR_ID
   private final Encoder encoder = ElevatorConstants.ENCODER_ID.get();
   private final ProfiledPIDController controller = new ProfiledPIDController(ElevatorConstants.PID_P,
       ElevatorConstants.PID_I, ElevatorConstants.PID_D, ElevatorConstants.MOTION_CONSTRAINTS);
+
+  VelocityVoltage driveController;
 
   // sim stuff
   private final TalonFXSimState motorSim = motor.getSimState();
@@ -51,11 +57,22 @@ public class ElevatorSub extends SubsystemBase {
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     motorConfig.CurrentLimits.SupplyCurrentLimit = 40;
+
+    
+    motorConfig.Slot0.kP = 1;
+    motorConfig.Slot0.kI = 0;
+    motorConfig.Slot0.kD = 0;
+
+    driveController = new VelocityVoltage(0).withSlot(0);
     motor.getConfigurator().apply(motorConfig);
 
     SmartDashboard.putData("Elevator Sim", mech2d);
     SmartDashboard.putData("Elevator PID", controller);
+
+    motor.setPosition(ElevatorConstants.HEIGHTS.STOW);
   }
+
+  public void reset(){motor.setPosition(ElevatorConstants.HEIGHTS.STOW);}
 
   public double getHeight() {
     return encoder.getDistance();
@@ -107,7 +124,7 @@ public class ElevatorSub extends SubsystemBase {
 
   @Override
   public void periodic() {
-    elevatorMech2d.setLength(getHeight());
+    //elevatorMech2d.setLength(getHeight());
 
     if (!DriverStation.isEnabled()) {
       motor.set(0);

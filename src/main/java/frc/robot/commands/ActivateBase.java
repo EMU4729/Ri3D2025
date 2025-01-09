@@ -15,7 +15,7 @@ public class ActivateBase extends Command{
     public ActivateBase(){this(false);}
     public ActivateBase(Boolean stayUnstowed){
         this.stayUnstowed = stayUnstowed;
-        addRequirements(/*Subsystems.coralArm,*/ Subsystems.algaeArm, Subsystems.elevator);
+        addRequirements(Subsystems.coralArm, Subsystems.algaeArm, Subsystems.elevator);
     }
 
     @Override
@@ -36,6 +36,7 @@ public class ActivateBase extends Command{
         Subsystems.coralArm.setTargetAngle(CoralArmConstants.ANGLES.STOW);
         Subsystems.algaeArm.setTargetAngle(AlgaeArmConstants.ANGLES.STOW);
         Subsystems.elevator.setTargetHeight(ElevatorConstants.HEIGHTS.STOW);
+        Subsystems.algaeGrabber.stop();
         super.end(interrupted);
     }
 }

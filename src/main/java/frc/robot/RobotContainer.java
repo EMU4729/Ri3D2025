@@ -22,6 +22,8 @@ import frc.robot.commands.ActivateCoralL1;
 import frc.robot.commands.ActivateCoralL2;
 import frc.robot.commands.ActivateCoralL3;
 import frc.robot.commands.ActivateCoralLoad;
+import frc.robot.commands.resetAll;
+import frc.robot.subsystems.FlowerSub;
 import frc.robot.teleop.TeleopProvider;
 
 /**
@@ -85,6 +87,19 @@ public class RobotContainer {
     OI.copilot.b().whileTrue(new ActivateAlgaeL2());
     OI.copilot.a().whileTrue(new ActivateAlgaeUnload());
 
+    OI.copilot.rightBumper()
+        .onTrue(new InstantCommand(() -> Subsystems.flower.extend()))
+        .onFalse(new InstantCommand(() -> Subsystems.flower.retract()));
+    
+    OI.copilot.leftBumper()
+        .onTrue(new InstantCommand(() -> Subsystems.algaeGrabber.unload()))
+        .onFalse(new InstantCommand(() -> Subsystems.algaeGrabber.stop()));
+    OI.copilot.leftTrigger()
+        .onTrue(new InstantCommand(() -> Subsystems.algaeGrabber.loadSlow()))
+        .onFalse(new InstantCommand(() -> Subsystems.algaeGrabber.stop()));
+
+    OI.copilot.start().onTrue(new resetAll());
+    
     // Drive bindings handled in teleop command
   }
 

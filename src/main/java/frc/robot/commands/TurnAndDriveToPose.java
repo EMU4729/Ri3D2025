@@ -7,13 +7,13 @@ import frc.robot.constants.AutoConstants;
 import frc.robot.constants.AutoConstants.AutoPoints;
 
 public class TurnAndDriveToPose extends SequentialCommandGroup{
-    public TurnAndDriveToPose(Translation2d targetPose, double targetSpeed, double driveTollerance, Rotation2d turnTollerance){
-        this(targetPose, targetSpeed, driveTollerance, turnTollerance, true);
+    public TurnAndDriveToPose(Translation2d targetPose, double targetSpeed, double maxTurn, double driveTollerance, Rotation2d turnTollerance){
+        this(targetPose, targetSpeed, maxTurn, driveTollerance, turnTollerance, true);
     }
-    public TurnAndDriveToPose(Translation2d targetPose, double targetSpeed, double driveTollerance, Rotation2d turnTollerance, boolean byAlliance){
+    public TurnAndDriveToPose(Translation2d targetPose, double targetSpeed, double maxTurn, double driveTollerance, Rotation2d turnTollerance, boolean byAlliance){
         addCommands(
-            new TurnToPose(targetPose, turnTollerance),
-            new DriveToPose(targetPose, targetSpeed, driveTollerance)
+            new TurnToPose(targetPose, maxTurn, turnTollerance),
+            new DriveToPose(targetPose, targetSpeed, maxTurn, driveTollerance)
         );
     }
 }

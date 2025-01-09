@@ -64,8 +64,12 @@ public class AlgaeArmSub extends SubsystemBase {
 
     motor.getConfigurator().apply(motorConfig);
     motor.setControl(controller);
+    motor.setPosition(AlgaeArmConstants.ANGLES.STOW);
 
     SmartDashboard.putData("Algae Arm Sim", mech2d);
+  }
+  public void reset(){
+    motor.setPosition(AlgaeArmConstants.ANGLES.STOW);
   }
 
   @Override
@@ -90,6 +94,7 @@ public class AlgaeArmSub extends SubsystemBase {
   }
 
   public void setTargetAngle(Angle angle) {
+    System.out.println(angle);
     motor.setControl(controller.withPosition(angle));
   }
 

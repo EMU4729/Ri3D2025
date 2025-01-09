@@ -25,6 +25,7 @@ public class ActivateStow extends Command{
         Subsystems.coralArm.setTargetAngle(CoralArmConstants.ANGLES.STOW);
         Subsystems.algaeArm.setTargetAngle(AlgaeArmConstants.ANGLES.STOW);
         Subsystems.elevator.setTargetHeight(ElevatorConstants.HEIGHTS.STOW);
+        Subsystems.algaeGrabber.stop();
         super.end(interrupted);
     }
 }

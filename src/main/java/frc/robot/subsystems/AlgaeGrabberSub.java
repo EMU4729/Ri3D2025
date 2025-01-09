@@ -20,4 +20,16 @@ public class AlgaeGrabberSub extends SubsystemBase {
     speed = MathUtil.clamp(speed, -1, 1);
     upperMotor.set(speed);
   }
+  public void loadSlow(){
+    set(0.2);
+  }
+  public void loadfast(){
+    set(0.4);
+  }
+  public void stop(){
+    set(0);
+  }
+  public void unload(){
+    set(-1);
+  }
 }
